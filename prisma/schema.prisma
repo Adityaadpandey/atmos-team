@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===== USER MODEL =====
+model User {
+  id        String    @id @default(cuid())
+  name      String
+  email     String    @unique
+  role      Role      @default(USER)
+  teams     Team[]    @relation("TeamMembers") // Relation to the teams the user is a part of
+  tasks     Task[]    @relation("AssignedTasks") // Tasks assigned to the user
+  comments  Comment[] // Comments made by the user
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+// ===== TEAM MODEL =====
+model Team {
+  id        String   @id @default(cuid())
+  name      String
+  members   User[]   @relation("TeamMembers") // Members of the team
+  tasks     Task[]   @relation("TeamTasks") // Tasks associated with the team
+  createdAt DateTime @default(now())
+}
+
+// ===== TASK MODEL =====
+model Task {
+  id             String     @id @default(cuid())
+  title          String
+  description    String?
+  deadline       DateTime
+  status         TaskStatus @default(TODO) // Status of the task (e.g., TODO, IN_PROGRESS, etc.)
+  assignees      User[]     @relation("AssignedTasks") // Users assigned to the task
+  teamId         String?
+  team           Team?      @relation("TeamTasks", fields: [teamId], references: [id]) // Team associated with the task
+  subTasks       SubTask[] // Subtasks under this task
+  comments       Comment[] // Comments on the task
+  timeline       Timeline[] @relation("TaskTimeline") // Timeline for task dependencies
+  relatedTasks   Task[]     @relation("RelatedTasks") // Tasks related to this task
+  prerequisiteOf Task[]     @relation("RelatedTasks") // Tasks dependent on this task
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  previousTasks  Timeline[] @relation("TaskPrevious") // Previous tasks in the timeline
+  nextTasks      Timeline[] @relation("TaskNext") // Next tasks in the timeline
+}
+
+// ===== SUBTASK MODEL =====
+model SubTask {
+  id         String     @id @default(cuid())
+  title      String
+  status     TaskStatus @default(TODO) // Status of the subtask
+  parentTask Task       @relation(fields: [taskId], references: [id]) // Parent task of the subtask
+  taskId     String
+  comments   Comment[] // Comments on the subtask
+  createdAt  DateTime   @default(now())
+}
+
+// ===== COMMENT MODEL =====
+model Comment {
+  id        String   @id @default(cuid())
+  text      String
+  author    User     @relation(fields: [authorId], references: [id]) // User who wrote the comment
+  authorId  String
+  task      Task?    @relation(fields: [taskId], references: [id]) // Task the comment belongs to
+  subTask   SubTask? @relation(fields: [subTaskId], references: [id]) // Subtask the comment belongs to
+  taskId    String?
+  subTaskId String?
+  createdAt DateTime @default(now())
+}
+
+// ===== TIMELINE MODEL =====
+model Timeline {
+  id             String  @id @default(cuid())
+  task           Task    @relation("TaskTimeline", fields: [taskId], references: [id]) // Task linked to the timeline
+  taskId         String
+  previousTask   Task?   @relation("TaskPrevious", fields: [previousTaskId], references: [id]) // Previous task in the timeline
+  previousTaskId String?
+  nextTask       Task?   @relation("TaskNext", fields: [nextTaskId], references: [id]) // Next task in the timeline
+  nextTaskId     String?
+}
+
+// ===== ENUMS =====
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+  BACKLOG
+}
+
+enum Role {
+  ADMIN
+  USER
+  TEAM_LEADER
+  MANAGER
+}
