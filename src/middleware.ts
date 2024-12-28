@@ -3,7 +3,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const ProctectedRoute = createRouteMatcher([
   '/sign-in(.*)',
   '/sign-up(.*)',
-  "/api/webhooks",
+  "/api/clerk",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
