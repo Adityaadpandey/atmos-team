@@ -12,6 +12,7 @@ export const db = {
       where: Prisma.UserWhereUniqueInput,
       data: Prisma.UserUpdateInput,
     ) => prisma.user.update({ where, data }),
+    upsert: (params: Prisma.UserUpsertArgs) => prisma.user.upsert(params),
     delete: (where: Prisma.UserWhereUniqueInput) =>
       prisma.user.delete({ where }),
   },
