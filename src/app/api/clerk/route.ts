@@ -2,8 +2,6 @@ import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
 
-
-
 export const POST = async (req: Request) => {
   const { data } = await req.json();
   const email = data.email_addresses[0].email_address;

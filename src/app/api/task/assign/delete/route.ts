@@ -14,7 +14,7 @@ export async function DELETE(req: Request) {
     if (!taskId || !assigneeId) {
       return NextResponse.json(
         { error: "Task ID and assignee ID are required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,11 +29,11 @@ export async function DELETE(req: Request) {
     });
 
     return NextResponse.json(updatedTask, { status: 200 });
-  } catch  {
+  } catch {
     console.error("Error removing assignee from task:");
     return NextResponse.json(
       { error: "An error occurred while removing the assignee from the task." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
