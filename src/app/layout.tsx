@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/globals/navbar";
 
 const font = DM_Sans({ subsets: ["latin"] });
 
@@ -18,7 +19,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={font.className}>{children}</body>
+        <body className={font.className}>
+          <Navbar />
+          {children}
+        </body>
       </html>
     </ClerkProvider>
   );
