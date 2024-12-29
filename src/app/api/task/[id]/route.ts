@@ -6,14 +6,17 @@ import { PrismaClient } from "@prisma/client";
 const db = new PrismaClient();
 
 // Handler for GET requests to retrieve a specific task by ID
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } },
+) {
   try {
     const { id } = params; // No need to await params; it is already available
 
     if (!id) {
       return NextResponse.json(
         { error: "Task ID is required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -34,16 +37,16 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     if (!task) {
       return NextResponse.json(
         { error: `Task with ID ${id} not found.` },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     return NextResponse.json(task, { status: 200 });
-  } catch  {
-    console.error("Error retrieving task");  // Improved error logging
+  } catch {
+    console.error("Error retrieving task"); // Improved error logging
     return NextResponse.json(
       { error: "An error occurred while retrieving the task." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
