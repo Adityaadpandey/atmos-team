@@ -4,7 +4,7 @@ const ProctectedRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/clerk",
-  "/api/(.*)",
+  "/api/task/(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
