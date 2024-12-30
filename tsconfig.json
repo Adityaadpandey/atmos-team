@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "strict": false,
     "esModuleInterop": true,
@@ -13,17 +17,29 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": ".",
+    "baseUrl": ".", // Ensure this is pointing to the root directory
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@lib": [
+        "./src/lib"
+      ],
+      // Ensure this is pointing to your src folder
+    },
+    "types": [
+      "node",
+      "@types/node"
+    ],
     "incremental": true,
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "types": ["node", "@types/node"]
+    ]
   },
   "include": [
     "next-env.d.ts",
