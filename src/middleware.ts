@@ -8,7 +8,7 @@ const ProctectedRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
-  if (!ProctectedRoute(request)) {
+  if (ProctectedRoute(request)) {
     await auth.protect();
   }
 });
