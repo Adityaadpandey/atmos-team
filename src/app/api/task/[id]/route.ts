@@ -11,6 +11,8 @@ export async function GET(
   { params }: { params: { id: string } },
 ) {
   try {
+      // asynchronous access of `params.id`.
+
     const { id } = params; // No need to await params; it is already available
 
     if (!id) {
