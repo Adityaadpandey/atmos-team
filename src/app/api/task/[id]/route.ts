@@ -6,11 +6,11 @@ import { PrismaClient } from "@prisma/client";
 const db = new PrismaClient();
 
 // Handler for GET requests to retrieve a specific task by ID
-export async function GET(
-  req: Request,
-  { params }: { params: { id: string } },
-) {
+export async function GET(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
+      // asynchronous access of `params.id`.
+
     const { id } = params; // No need to await params; it is already available
 
     if (!id) {

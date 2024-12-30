@@ -3,10 +3,8 @@ import { NextResponse } from "next/server";
 
 const db = new PrismaClient();
 
-export async function POST(
-  req: Request,
-  { params }: { params: { teamId: string } },
-) {
+export async function POST(req: Request, props: { params: Promise<{ teamId: string }> }) {
+  const params = await props.params;
   try {
     // asynchronous access of `params.id`.
 
