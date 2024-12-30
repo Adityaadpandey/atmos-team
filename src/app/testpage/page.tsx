@@ -51,7 +51,7 @@ export default function AddDeviceForm() {
   };
 
   return (
-    <div className="mx-auto max-w-lg rounded-md bg-white p-6 shadow-lg mt-[120px]">
+    <div className="mx-auto mt-[120px] max-w-lg rounded-md bg-white p-6 shadow-lg">
       <h2 className="mb-4 text-center text-2xl font-semibold">Add a Device</h2>
       {error && <div className="mb-4 text-sm text-red-500">{error}</div>}
       {success && <div className="mb-4 text-sm text-green-500">{success}</div>}
