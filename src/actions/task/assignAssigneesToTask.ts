@@ -1,7 +1,6 @@
-'use server';
+"use server";
 
 import { db } from "@/lib/db";
-
 
 // Server action to assign assignees to a task
 export async function assignAssigneesToTask({

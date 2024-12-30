@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 import { db } from "@/lib/db";
 
@@ -29,6 +29,8 @@ export async function removeAssigneeFromTask({
     return updatedTask;
   } catch (error) {
     console.error("Error removing assignee from task:", error);
-    throw new Error("An error occurred while removing the assignee from the task.");
+    throw new Error(
+      "An error occurred while removing the assignee from the task.",
+    );
   }
 }
