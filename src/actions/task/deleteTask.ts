@@ -1,7 +1,6 @@
-'use server';
+"use server";
 
 import { db } from "@/lib/db";
-
 
 // Server action to delete a task by ID
 export async function deleteTask(id: string) {

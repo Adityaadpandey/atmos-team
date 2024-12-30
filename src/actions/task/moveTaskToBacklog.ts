@@ -11,7 +11,7 @@ export async function moveTaskToBacklog(id: string) {
     const updatedTask = await db.task.update({
       where: { id },
       data: {
-        status: "BACKLOG",  // Change the status to "BACKLOG"
+        status: "BACKLOG", // Change the status to "BACKLOG"
       },
     });
 

@@ -32,6 +32,8 @@ export async function getAllTaskAndSubTask(userId: string) {
     return userTasks;
   } catch (error) {
     console.error("Error retrieving tasks and subtasks:", error.message);
-    throw new Error("An error occurred while retrieving the tasks and subtasks.");
+    throw new Error(
+      "An error occurred while retrieving the tasks and subtasks.",
+    );
   }
 }

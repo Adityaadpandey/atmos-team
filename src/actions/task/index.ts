@@ -8,12 +8,12 @@ import { moveTaskToBacklog } from "./moveTaskToBacklog";
 import { removeAssigneeFromTask } from "./removeAssigneeFromTask";
 
 export {
-    assignAssigneesToTask,
-    createTask,
-    deleteTask,
-    getAllTaskAndSubTask,
-    getBacklogTasks,
-    getTaskById,
-    moveTaskToBacklog,
-    removeAssigneeFromTask
+  assignAssigneesToTask,
+  createTask,
+  deleteTask,
+  getAllTaskAndSubTask,
+  getBacklogTasks,
+  getTaskById,
+  moveTaskToBacklog,
+  removeAssigneeFromTask,
 };

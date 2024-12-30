@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 
-
 // Server action to fetch task by ID
 export async function getTaskById(id: string) {
   try {

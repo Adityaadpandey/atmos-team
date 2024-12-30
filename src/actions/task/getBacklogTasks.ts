@@ -1,7 +1,6 @@
-'use server';
+"use server";
 
 import { db } from "@/lib/db";
-
 
 // Server action to get tasks with status 'BACKLOG'
 export async function getBacklogTasks() {
