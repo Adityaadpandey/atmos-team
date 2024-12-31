@@ -10,8 +10,6 @@ import { usePathname } from "next/navigation";
 
 import { ModeToggle } from "@/components/globals/theme-toggle";
 import Category from "@/components/icons/category";
-import Logs from "@/components/icons/clipboard";
-import Templates from "@/components/icons/cloud_download";
 import Home from "@/components/icons/home";
 import Payment from "@/components/icons/payment";
 import Settings from "@/components/icons/settings";
@@ -60,12 +58,12 @@ const MenuOptions = () => {
                         "group flex h-8 w-8 scale-[1.5] cursor-pointer items-center justify-center rounded-lg p-[3px]",
                         {
                           "bg-[#EEE0FF] dark:bg-[#2F006B]":
-                            pathName === menuItem.href,
+                            pathName.startsWith(menuItem.href),
                         },
                       )}
                     >
                       <menuItem.Component
-                        selected={pathName === menuItem.href}
+                        selected={pathName.startsWith(menuItem.href)}
                       />
                     </Link>
                   </li>
