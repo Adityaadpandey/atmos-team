@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Chip } from "@/components/ui/chip"; // Assuming shadcn/ui has a Chip component
+import { Chip } from "@/components/ui/chip";
 import {
   Form,
   FormControl,
@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -41,7 +42,7 @@ export default function InputForm() {
         if (!emails.includes(email)) {
           setEmails([...emails, email]);
         }
-        event.currentTarget.value = ""; // Clear the input
+        event.currentTarget.value = "";
       }
     }
   };
@@ -59,53 +60,67 @@ export default function InputForm() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-primary-foreground text-primary">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Username Field */}
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Create Your Team</FormLabel>
-                <FormControl>
-                  <Input placeholder="Your Team Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <div className="flex justify-center items-center h-screen bg-background">
+      <Card>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full max-w-md p-6 bg-card rounded-lg shadow-lg">
 
-          {/* <Separator /> */}
+            {/* Team Name Field */}
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-medium text-primary">Create Your Team</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Your Team Name"
+                      {...field}
+                      className="bg-input text-input-text placeholder:text-placeholder rounded-md border-2 border-input-border focus:border-focus focus:ring-2 focus:ring-primary"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-sm text-error" />
+                </FormItem>
+              )}
+            />
 
-          <FormItem>
-            <FormLabel>Emails</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter email and press Enter"
-                onKeyDown={handleEmailInput}
-              />
-            </FormControl>
-            <FormDescription>
-              Add emails by pressing Enter. They will appear below.
-            </FormDescription>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {emails.map((email, index) => (
-                <Chip
-                  key={index}
-                  onClose={() => handleRemoveChip(email)}
-                  className="bg-primary text-primary-foreground max-w-[50vw]"
-                >
-                  {email}
-                </Chip>
-              ))}
+            {/* Emails Input Section */}
+            <FormItem>
+              <FormLabel className="text-lg font-medium text-primary">Emails</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter email and press Enter"
+                  onKeyDown={handleEmailInput}
+                  className="bg-input text-input-text placeholder:text-placeholder rounded-md border-2 border-input-border focus:border-focus focus:ring-2 focus:ring-primary"
+                />
+              </FormControl>
+              <FormDescription className="text-sm text-muted">
+                Add emails by pressing Enter. They will appear below.
+              </FormDescription>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {emails.map((email, index) => (
+                  <Chip
+                    key={index}
+                    onClose={() => handleRemoveChip(email)}
+                    className="bg-chip text-primary-foreground  px-4 py-1 rounded-full border border-chip"
+                  >
+                    {email}
+                  </Chip>
+                ))}
+              </div>
+            </FormItem>
+
+            {/* Submit Button */}
+            <div className="flex justify-center">
+              <Button variant="secondary">
+                Create Team
+              </Button>
             </div>
-          </FormItem>
-
-          <Button type="submit">Submit</Button>
-        </form>
-      </Form>
+          </form>
+        </Form>
+    </Card>
     </div>
+
+
   );
 }
