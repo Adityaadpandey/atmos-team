@@ -31,8 +31,8 @@ const menuOptions = [
   { name: "Settings", Component: Settings, href: "/settings" },
   { name: "Connections", Component: Category, href: "/connections" },
   { name: "Billing", Component: Payment, href: "/billing" },
-//   { name: 'Templates', Component: Templates, href: '/templates' },
-//   { name: 'Logs', Component: Logs, href: '/logs' },
+  //   { name: 'Templates', Component: Templates, href: '/templates' },
+  //   { name: 'Logs', Component: Logs, href: '/logs' },
 ];
 
 const MenuOptions = () => {
@@ -42,12 +42,12 @@ const MenuOptions = () => {
     <nav className="flex max-h-screen flex-col items-center justify-between gap-10 overflow-scroll px-2 py-4 dark:bg-black">
       <div className="flex flex-col items-center justify-center gap-5">
         <Link
-                  className="z-10 -mb-[23px] flex flex-row font-bold text-center text-sm dark:text-[#cea5ff] text-[#9c4bff] -pl-2 -mx-2"
+          className="-pl-2 z-10 -mx-2 -mb-[23px] flex flex-row text-center text-sm font-bold text-[#9c4bff] dark:text-[#cea5ff]"
           href="/"
         >
           {"Arc Atmos"}
         </Link>
-              <Separator className="h-[1.25px] dark:bg-[#b77dff63] bg-[#c596ff63] " />
+        <Separator className="h-[1.25px] bg-[#c596ff63] dark:bg-[#b77dff63]" />
         <TooltipProvider>
           {menuOptions.map((menuItem) => (
             <ul key={menuItem.name}>
