@@ -35,21 +35,23 @@ export function ModeToggle() {
       variant="outline"
       size="icon"
       onClick={handleThemeToggle}
-      className={`relative flex transform items-center justify-center overflow-hidden rounded-full p-2 transition-all hover:rotate-6 hover:scale-110 focus:outline-none ${theme === "light" ? "focus:ring-[var(--primary)] dark:focus:ring-[var(--primary)]" : "focus:ring-[var(--secondary)] dark:focus:ring-[var(--secondary)]"} "} `}
+      className={`relative flex transform items-center justify-center overflow-hidden rounded-full p-2 transition-all hover:rotate-6 hover:scale-110 focus:outline-none ${theme === "light" ? "focus:ring-[var(--primary)] dark:focus:ring-[var(--primary)]" : "focus:ring-[var(--secondary)] dark:focus:ring-[var(--secondary)]"} "}`}
     >
       {/* Sun Icon */}
       <Sun
-        className={`absolute h-[1.4rem] w-[1.4rem] transform transition-all duration-500 ease-in-out ${theme === "dark"
+        className={`absolute h-[1.4rem] w-[1.4rem] transform transition-all duration-500 ease-in-out ${
+          theme === "dark"
             ? "rotate-90 scale-0 opacity-0"
             : "rotate-0 scale-100 opacity-100"
-          }`}
+        }`}
       />
       {/* Moon Icon */}
       <Moon
-        className={`absolute h-[1.4rem] w-[1.4rem] transform transition-all duration-500 ease-in-out ${theme === "light"
+        className={`absolute h-[1.4rem] w-[1.4rem] transform transition-all duration-500 ease-in-out ${
+          theme === "light"
             ? "rotate-0 scale-0 opacity-0"
             : "rotate-0 scale-100 opacity-100"
-          }`}
+        }`}
       />
       <span className="sr-only">Toggle theme</span>
 

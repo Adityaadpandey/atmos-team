@@ -1,15 +1,11 @@
-import { memo } from "react";
+import React from 'react'
 
-const Home = memo(() => {
+const page = () => {
   return (
-    <div>
-      <h1>Home</h1>
+    <div className='flex justify-center items-center h-screen'>
+      <h1>Page</h1>
     </div>
-  );
-});
+  )
+}
 
-Home.displayName = "Home";
-const Page = () => {
-  return <Home />;
-};
-export default Page;
+export default page
