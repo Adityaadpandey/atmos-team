@@ -23,7 +23,6 @@ export async function createTeam({
   return team;
 }
 
-
 export async function getTeam(teamId: string) {
   const team = await db.team.findUnique({
     where: {
@@ -33,4 +32,3 @@ export async function getTeam(teamId: string) {
 
   return team;
 }
-

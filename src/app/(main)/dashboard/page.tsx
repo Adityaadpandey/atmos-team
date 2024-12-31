@@ -60,38 +60,44 @@ export default function InputForm() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-background">
+    <div className="flex h-screen items-center justify-center bg-background">
       <Card>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full max-w-md p-6 bg-card rounded-lg shadow-lg">
-
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full max-w-md space-y-8 rounded-lg bg-card p-6 shadow-lg"
+          >
             {/* Team Name Field */}
             <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-lg font-medium text-primary">Create Your Team</FormLabel>
+                  <FormLabel className="text-lg font-medium text-primary">
+                    Create Your Team
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Your Team Name"
                       {...field}
-                      className="bg-input text-input-text placeholder:text-placeholder rounded-md border-2 border-input-border focus:border-focus focus:ring-2 focus:ring-primary"
+                      className="text-input-text placeholder:text-placeholder border-input-border focus:border-focus rounded-md border-2 bg-input focus:ring-2 focus:ring-primary"
                     />
                   </FormControl>
-                  <FormMessage className="text-sm text-error" />
+                  <FormMessage className="text-error text-sm" />
                 </FormItem>
               )}
             />
 
             {/* Emails Input Section */}
             <FormItem>
-              <FormLabel className="text-lg font-medium text-primary">Emails</FormLabel>
+              <FormLabel className="text-lg font-medium text-primary">
+                Emails
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter email and press Enter"
                   onKeyDown={handleEmailInput}
-                  className="bg-input text-input-text placeholder:text-placeholder rounded-md border-2 border-input-border focus:border-focus focus:ring-2 focus:ring-primary"
+                  className="text-input-text placeholder:text-placeholder border-input-border focus:border-focus rounded-md border-2 bg-input focus:ring-2 focus:ring-primary"
                 />
               </FormControl>
               <FormDescription className="text-sm text-muted">
@@ -102,7 +108,7 @@ export default function InputForm() {
                   <Chip
                     key={index}
                     onClose={() => handleRemoveChip(email)}
-                    className="bg-chip text-primary-foreground  px-4 py-1 rounded-full border border-chip"
+                    className="bg-chip border-chip rounded-full border px-4 py-1 text-primary-foreground"
                   >
                     {email}
                   </Chip>
@@ -112,15 +118,11 @@ export default function InputForm() {
 
             {/* Submit Button */}
             <div className="flex justify-center">
-              <Button variant="secondary">
-                Create Team
-              </Button>
+              <Button variant="secondary">Create Team</Button>
             </div>
           </form>
         </Form>
-    </Card>
+      </Card>
     </div>
-
-
   );
 }
