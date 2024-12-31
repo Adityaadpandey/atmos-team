@@ -57,8 +57,9 @@ const MenuOptions = () => {
                       className={clsx(
                         "group flex h-8 w-8 scale-[1.5] cursor-pointer items-center justify-center rounded-lg p-[3px]",
                         {
-                          "bg-[#EEE0FF] dark:bg-[#2F006B]":
-                            pathName.startsWith(menuItem.href),
+                          "bg-[#EEE0FF] dark:bg-[#2F006B]": pathName.startsWith(
+                            menuItem.href,
+                          ),
                         },
                       )}
                     >
