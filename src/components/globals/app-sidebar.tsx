@@ -1,0 +1,117 @@
+"use client";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { ModeToggle } from "@/components/globals/theme-toggle";
+import Category from "@/components/icons/category";
+import Logs from "@/components/icons/clipboard";
+import Templates from "@/components/icons/cloud_download";
+import Home from "@/components/icons/home";
+import Payment from "@/components/icons/payment";
+import Settings from "@/components/icons/settings";
+import Workflows from "@/components/icons/workflows";
+import { Separator } from "@/components/ui/separator";
+import clsx from "clsx";
+import {
+  Database,
+  GitBranch,
+  LucideMousePointerClick,
+  User,
+} from "lucide-react";
+
+const menuOptions = [
+  { name: "Dashboard", Component: Home, href: "/dashboard" },
+  { name: "Workflows", Component: Workflows, href: "/workflows" },
+  { name: "Settings", Component: Settings, href: "/settings" },
+  { name: "Connections", Component: Category, href: "/connections" },
+  { name: "Billing", Component: Payment, href: "/billing" },
+//   { name: 'Templates', Component: Templates, href: '/templates' },
+//   { name: 'Logs', Component: Logs, href: '/logs' },
+];
+
+const MenuOptions = () => {
+  const pathName = usePathname();
+
+  return (
+    <nav className="flex max-h-screen flex-col items-center justify-between gap-10 overflow-scroll px-2 py-4 dark:bg-black">
+      <div className="flex flex-col items-center justify-center gap-5">
+        <Link
+                  className="z-10 -mb-[23px] flex flex-row font-bold text-center text-sm dark:text-[#cea5ff] text-[#9c4bff] -pl-2 -mx-2"
+          href="/"
+        >
+          {"Arc Atmos"}
+        </Link>
+              <Separator className="h-[1.25px] dark:bg-[#b77dff63] bg-[#c596ff63] " />
+        <TooltipProvider>
+          {menuOptions.map((menuItem) => (
+            <ul key={menuItem.name}>
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger>
+                  <li>
+                    <Link
+                      href={menuItem.href}
+                      className={clsx(
+                        "group flex h-8 w-8 scale-[1.5] cursor-pointer items-center justify-center rounded-lg p-[3px]",
+                        {
+                          "bg-[#EEE0FF] dark:bg-[#2F006B]":
+                            pathName === menuItem.href,
+                        },
+                      )}
+                    >
+                      <menuItem.Component
+                        selected={pathName === menuItem.href}
+                      />
+                    </Link>
+                  </li>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="right"
+                  className="bg-black/10 backdrop-blur-xl"
+                >
+                  <p>{menuItem.name}</p>
+                </TooltipContent>
+              </Tooltip>
+            </ul>
+          ))}
+        </TooltipProvider>
+        {/* <Separator /> */}
+
+        <div className="absolute bottom-32">
+          <div className="flex max-h-[220px] flex-col items-center gap-9 overflow-scroll rounded-full border-[1px] px-2 py-4 dark:bg-[#353346]/30">
+            <div className="relative rounded-full border-[1px] p-2 dark:border-t-[2px] dark:border-t-[#353346] dark:bg-[#353346]/70">
+              <LucideMousePointerClick className="dark:text-white" size={18} />
+              <div className="absolute -bottom-[30px] left-1/2 h-6 translate-x-[-50%] transform border-l-2 border-muted-foreground/50" />
+            </div>
+            <div className="relative rounded-full border-[1px] p-2 dark:border-t-[2px] dark:border-t-[#353346] dark:bg-[#353346]/70">
+              <GitBranch className="text-muted-foreground" size={18} />
+              <div className="absolute -bottom-[30px] left-1/2 h-6 translate-x-[-50%] transform border-l-2 border-muted-foreground/50"></div>
+            </div>
+            <div className="relative rounded-full border-[1px] p-2 dark:border-t-[2px] dark:border-t-[#353346] dark:bg-[#353346]/70">
+              <Database className="text-muted-foreground" size={18} />
+              <div className="absolute -bottom-[30px] left-1/2 h-6 translate-x-[-50%] transform border-l-2 border-muted-foreground/50"></div>
+            </div>
+            <div className="relative rounded-full border-[1px] p-2 dark:border-t-[2px] dark:border-t-[#353346] dark:bg-[#353346]/70">
+              <GitBranch className="text-muted-foreground" size={18} />
+            </div>
+          </div>
+          {/* <Separator /> */}
+        </div>
+      </div>
+      <div className="fixed bottom-0 my-2 flex flex-col gap-5 rounded-full border-[1px] p-2 py-2 dark:bg-[#353346]/30">
+        <ModeToggle />
+
+        <div className="flex items-center justify-center gap-2 rounded-3xl p-2 dark:bg-[#353346]/80">
+          <User className="text-muted-foreground" size={18} />
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default MenuOptions;
