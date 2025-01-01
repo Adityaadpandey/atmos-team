@@ -28,11 +28,15 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <main>
-              <Navbar />
-              <div className="flex h-screen overflow-hidden">
+            <main className="flex min-h-screen overflow-hidden">
+              {/* Fixed Sidebar */}
+              <div className="fixed top-0 left-2 bottom-0 w-14 bg-black dark:bg-black p-4">
                 <MenuOptions />
-                <div className="w-full">{children}</div>
+              </div>
+
+              {/* Content Area */}
+              <div className="ml-10 h-screen overflow-auto p-6">
+                {children}
               </div>
             </main>
           </ThemeProvider>
