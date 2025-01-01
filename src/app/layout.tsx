@@ -30,7 +30,7 @@ export default function RootLayout({
           >
             <main className="flex min-h-screen overflow-hidden">
               {/* Fixed Sidebar */}
-              <div className="fixed top-0 left-2 bottom-0 w-14 bg-black dark:bg-black p-4">
+              <div className="fixed top-0 left-0 bottom-0 w-16 bg-white p-4">
                 <MenuOptions />
               </div>
 
