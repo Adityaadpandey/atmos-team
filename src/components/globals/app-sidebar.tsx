@@ -37,10 +37,10 @@ const MenuOptions = () => {
   const pathName = usePathname();
 
   return (
-    <nav className="flex relative max-h-screen flex-col items-center justify-between gap-10 px-6 pl-2 py-4 dark:bg-black">
-      <div className="flex fixed flex-col items-center justify-center gap-5">
+    <nav className="relative flex max-h-screen flex-col items-center justify-between">
+      <div className="fixed flex flex-col items-center justify-center gap-5">
         <Link
-          className="-pl-2 z-10  -mb-[23px] flex flex-row text-center text-sm font-bold text-[#9c4bff] dark:text-[#cea5ff]"
+          className="-pl-2 z-10 -mb-[23px] flex flex-row text-center text-sm font-bold text-[#9c4bff] dark:text-[#cea5ff]"
           href="/"
         >
           {"Arc Atmos"}
@@ -81,7 +81,7 @@ const MenuOptions = () => {
         </TooltipProvider>
         {/* <Separator /> */}
 
-        <div className="relative ">
+        <div className="relative">
           <div className="flex max-h-[220px] flex-col items-center gap-9 overflow-scroll rounded-full border-[1px] px-2 py-4 dark:bg-[#353346]/30">
             <div className="relative rounded-full border-[1px] p-2 dark:border-t-[2px] dark:border-t-[#353346] dark:bg-[#353346]/70">
               <LucideMousePointerClick className="dark:text-white" size={18} />
@@ -105,11 +105,12 @@ const MenuOptions = () => {
       <div className="fixed bottom-0 my-2 flex flex-col gap-5 rounded-full border-[1px] p-2 py-2 dark:bg-[#353346]/30">
         <ModeToggle />
 
-        <div className="flex items-center justify-center gap-2 rounded-3xl p-2 dark:bg-[#353346]/80">
+        <div className="flex items-center justify-center gap-2 rounded-3xl bg-[#353346]/10 p-2 dark:bg-[#353346]/80">
           <User className="text-muted-foreground" size={18} />
         </div>
       </div>
     </nav>
+    // </Card>
   );
 };
 
