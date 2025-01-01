@@ -3,7 +3,7 @@ export interface Task {
   title: string;
   description: string;
   status: string;
-  subTasks: SubTask[];
+  // subTasks: SubTask[];
   comments: Comment[];
   assignees: Assignee[];
   team: Team;

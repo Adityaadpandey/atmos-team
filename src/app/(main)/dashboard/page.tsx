@@ -23,18 +23,21 @@ const DraggableTask = ({ task }: { task: Task }) => {
   });
 
   const cardStyles: Record<TaskStatus, string> = {
-    TODO: "bg-blue-50",
-    IN_PROGRESS: "bg-yellow-50",
-    COMPLETED: "bg-green-50",
-    BACKLOG: "bg-gray-50",
+    TODO: "bg-blue-200 dark:bg-blue-900",
+    IN_PROGRESS: "bg-yellow-200 dark:bg-yellow-800",
+    COMPLETED: "bg-green-200 dark:bg-green-800",
+    BACKLOG: "bg-red-200 dark:bg-red-800",
   };
 
   const titleStyles = {
-    TODO: "text-blue-600",
-    IN_PROGRESS: "text-yellow-600",
-    COMPLETED: "text-green-600",
-    BACKLOG: "text-gray-600",
+    TODO: "text-blue-800 dark:text-blue-100",
+    IN_PROGRESS: "text-yellow-800 dark:text-yellow-100",
+    COMPLETED: "text-green-800 dark:text-green-100",
+    BACKLOG: "text-red-800 dark:text-red-100",
   };
+
+
+
 
   return (
     <Card
@@ -48,13 +51,23 @@ const DraggableTask = ({ task }: { task: Task }) => {
       >
         {task.title}
       </h3>
-      <p className="mt-2 text-gray-600">{task.description}</p>
-      <Badge
+      <p className="mt-2 ">{task.description}</p>
+      {/* <Badge
         variant={task.status.toLowerCase()}
         className="mt-3 text-primary-foreground"
       >
         {task.status}
-      </Badge>
+      </Badge> */}
+      <br/>
+
+
+        {task.assignees.map((assignee) =>
+          <Badge key={assignee.id} variant="primary" className="bg-background mx-2">
+            {assignee.name}
+          </Badge>
+        )
+        }
+
     </Card>
   );
 };
@@ -147,41 +160,43 @@ const DashboardContent = () => {
     return <div className="text-center text-lg text-red-500">{error}</div>;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="mx-auto w-full max-w-7xl space-y-10 p-6">
-        <h1 className="text-gradient mb-8 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-center text-4xl font-extrabold text-transparent">
-          Task Dashboard
-        </h1>
+    <Card >
+      <div className="flex min-h-screen items-center justify-center bg-background w-full">
+        <div className="mx-auto w-full max-w-7xl space-y-10 p-6">
+          <h1 className="text-gradient mb-8 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-center text-4xl font-extrabold text-transparent">
+            Task Dashboard
+          </h1>
 
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <TaskColumn
+              title="TODO"
+              tasks={tasksByStatus.todo}
+              status="TODO"
+              onMoveTask={moveTask}
+            />
+            <TaskColumn
+              title="IN PROGRESS"
+              tasks={tasksByStatus.inProgress}
+              status="IN_PROGRESS"
+              onMoveTask={moveTask}
+            />
+            <TaskColumn
+              title="COMPLETED"
+              tasks={tasksByStatus.completed}
+              status="COMPLETED"
+              onMoveTask={moveTask}
+            />
+          </div>
+
           <TaskColumn
-            title="TODO"
-            tasks={tasksByStatus.todo}
-            status="TODO"
-            onMoveTask={moveTask}
-          />
-          <TaskColumn
-            title="IN PROGRESS"
-            tasks={tasksByStatus.inProgress}
-            status="IN_PROGRESS"
-            onMoveTask={moveTask}
-          />
-          <TaskColumn
-            title="COMPLETED"
-            tasks={tasksByStatus.completed}
-            status="COMPLETED"
+            title="BACKLOG"
+            tasks={tasksByStatus.backlog}
+            status="BACKLOG"
             onMoveTask={moveTask}
           />
         </div>
-
-        <TaskColumn
-          title="BACKLOG"
-          tasks={tasksByStatus.backlog}
-          status="BACKLOG"
-          onMoveTask={moveTask}
-        />
       </div>
-    </div>
+    </Card>
   );
 };
 
