@@ -37,7 +37,7 @@ const MenuOptions = () => {
   const pathName = usePathname();
 
   return (
-    <nav className="flex max-h-screen flex-col items-center justify-between gap-10 overflow-scroll px-2 py-4 dark:bg-black">
+    <nav className="flex relative max-h-screen flex-col items-center justify-between gap-10 overflow-scroll px-2 py-4 dark:bg-black">
       <div className="flex flex-col items-center justify-center gap-5">
         <Link
           className="-pl-2 z-10 -mx-2 -mb-[23px] flex flex-row text-center text-sm font-bold text-[#9c4bff] dark:text-[#cea5ff]"

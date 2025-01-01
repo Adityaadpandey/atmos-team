@@ -1,128 +1,91 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { getAllTaskAndSubTask } from '@/actions/task';
+import { Task } from '@/types';
+import { useAuth } from '@clerk/nextjs';
+import { useEffect, useState } from 'react';
 
-import { Button } from "@/components/ui/button";
-import { Chip } from "@/components/ui/chip";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
+const Page = () => {
+  const { isLoaded, userId } = useAuth();
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-const FormSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
-
-export default function InputForm() {
-  const [emails, setEmails] = useState<string[]>([]);
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      username: "",
-    },
-  });
-
-  const handleEmailInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      const email = event.currentTarget.value.trim();
-      if (email && validateEmail(email)) {
-        if (!emails.includes(email)) {
-          setEmails([...emails, email]);
-        }
-        event.currentTarget.value = "";
+  useEffect(() => {
+    const fetchAuth = async () => {
+      if (!userId) {
+        setError('User ID is not available.');
+        setLoading(false);
+        return;
       }
+
+      try {
+        const data = await getAllTaskAndSubTask(userId);
+        console.log(data);
+        setTasks(data.tasks as Task[]);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setError('An error occurred while fetching tasks and subtasks.');
+        setLoading(false);
+      }
+    };
+
+    if (isLoaded && userId) {
+      fetchAuth();
     }
-  };
+  }, [isLoaded, userId]);
 
-  const validateEmail = (email: string) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if (loading) {
+    return <div className="text-center text-lg text-red-500">Loading...</div>;
+  }
 
-  const handleRemoveChip = (email: string) => {
-    setEmails(emails.filter((e) => e !== email));
-  };
-
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log("Username:", data.username);
-    console.log("Emails:", emails);
-  };
+  if (error) {
+    return <div className="text-center text-lg text-red-500">{error}</div>;
+  }
 
   return (
-    <div className="flex h-screen items-center justify-center bg-background">
-      <Card>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full max-w-md space-y-8 rounded-lg bg-card p-6 shadow-lg"
-          >
-            {/* Team Name Field */}
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-lg font-medium text-primary">
-                    Create Your Team
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Your Team Name"
-                      {...field}
-                      className="text-input-text placeholder:text-placeholder border-input-border focus:border-focus rounded-md border-2 bg-input focus:ring-2 focus:ring-primary"
-                    />
-                  </FormControl>
-                  <FormMessage className="text-error text-sm" />
-                </FormItem>
-              )}
-            />
+    <div className="max-w-7xl mx-auto p-6 overflow-y-auto">
+      <h1 className="text-3xl font-semibold text-center mb-8 text-gray-800">Dashboard</h1>
+      {tasks.length === 0 ? (
+        <p className="text-center text-lg text-gray-500">No tasks available.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {tasks.map((task) => (
+            <div
+              key={task.id}
+              className="bg-white rounded-lg shadow-lg p-6 mb-6 hover:scale-105 transition-transform duration-200"
+            >
+              <h2 className="text-2xl font-semibold text-gray-900">{task.title}</h2>
+              <p className="text-gray-600 mt-2">{task.description}</p>
 
-            {/* Emails Input Section */}
-            <FormItem>
-              <FormLabel className="text-lg font-medium text-primary">
-                Emails
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter email and press Enter"
-                  onKeyDown={handleEmailInput}
-                  className="text-input-text placeholder:text-placeholder border-input-border focus:border-focus rounded-md border-2 bg-input focus:ring-2 focus:ring-primary"
-                />
-              </FormControl>
-              <FormDescription className="text-sm text-muted">
-                Add emails by pressing Enter. They will appear below.
-              </FormDescription>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {emails.map((email, index) => (
-                  <Chip
-                    key={index}
-                    onClose={() => handleRemoveChip(email)}
-                    className="bg-chip border-chip rounded-full border px-4 py-1 text-primary-foreground"
-                  >
-                    {email}
-                  </Chip>
-                ))}
+              <div className="mt-4">
+                <h3 className="text-xl font-semibold text-gray-800">Subtasks</h3>
+                <ul className="list-disc pl-5 mt-2 text-gray-700">
+                  {task.subTasks.map((subTask) => (
+                    <li key={subTask.id} className="hover:text-teal-500 cursor-pointer">
+                      {subTask.title}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </FormItem>
 
-            {/* Submit Button */}
-            <div className="flex justify-center">
-              <Button variant="secondary">Create Team</Button>
+              <div className="mt-4">
+                <h3 className="text-xl font-semibold text-gray-800">Assignees</h3>
+                <ul className="pl-5 mt-2 text-gray-700">
+                  {task.assignees.map((assignee) => (
+                    <li key={assignee.id} className="hover:text-blue-500 cursor-pointer">
+                      {assignee.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </form>
-        </Form>
-      </Card>
+          ))}
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default Page;
