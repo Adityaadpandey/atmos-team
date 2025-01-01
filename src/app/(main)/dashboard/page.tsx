@@ -41,7 +41,7 @@ const DraggableTask = ({ task }: { task: Task }) => {
       ref={dragRef}
       className={`p-5 ${cardStyles[task.status as TaskStatus]} cursor-move rounded-xl shadow-md transition-all duration-200 ease-in-out hover:shadow-lg ${isDragging ? "opacity-50" : "opacity-100"}`}
       // TODO: Add onClick event to open task details
-      onClick={()=>console.log(task.id)}
+      onClick={() => console.log(task.id)}
     >
       <h3
         className={`text-lg font-semibold ${titleStyles[task.status as TaskStatus]}`}
