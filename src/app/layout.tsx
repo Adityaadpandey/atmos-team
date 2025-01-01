@@ -4,7 +4,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/globals/navbar";
 
 const font = DM_Sans({ subsets: ["latin"] });
 
@@ -30,14 +29,12 @@ export default function RootLayout({
           >
             <main className="flex min-h-screen overflow-hidden">
               {/* Fixed Sidebar */}
-              <div className="fixed top-0 left-0 bottom-0 w-16 bg-white p-4">
+              <div className="fixed bottom-0 left-0 top-0 w-16 p-4">
                 <MenuOptions />
               </div>
 
               {/* Content Area */}
-              <div className="ml-10 h-screen overflow-auto p-6">
-                {children}
-              </div>
+              <div className="ml-14 h-screen overflow-auto p-6">{children}</div>
             </main>
           </ThemeProvider>
         </body>

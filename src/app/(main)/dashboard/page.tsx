@@ -1,21 +1,106 @@
-'use client';
+"use client";
 
 import { getAllTaskAndSubTask } from "@/actions/task";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import { Task } from "@/types";
 import { useAuth } from "@clerk/nextjs";
-import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card"; // Custom theme Card component
-import { Button } from "@/components/ui/button"; // Custom theme Button component
-import { Badge } from "@/components/ui/badge"; // Assuming Badge component exists for status display
+import { useEffect, useMemo, useState } from "react";
+import { DndProvider, useDrag, useDrop } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
-const Page = () => {
+const ITEM_TYPE = "TASK";
+
+type TaskStatus = "TODO" | "IN_PROGRESS" | "COMPLETED" | "BACKLOG";
+
+const DraggableTask = ({ task }: { task: Task }) => {
+  const [{ isDragging }, dragRef] = useDrag({
+    type: ITEM_TYPE,
+    item: task,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const cardStyles: Record<TaskStatus, string> = {
+    TODO: "bg-blue-50",
+    IN_PROGRESS: "bg-yellow-50",
+    COMPLETED: "bg-green-50",
+    BACKLOG: "bg-gray-50",
+  };
+
+  const titleStyles = {
+    TODO: "text-blue-600",
+    IN_PROGRESS: "text-yellow-600",
+    COMPLETED: "text-green-600",
+    BACKLOG: "text-gray-600",
+  };
+
+  return (
+    <Card
+      ref={dragRef}
+      className={`p-5 ${cardStyles[task.status as TaskStatus]} cursor-move rounded-xl shadow-md transition-all duration-200 ease-in-out hover:shadow-lg ${isDragging ? "opacity-50" : "opacity-100"}`}
+      // TODO: Add onClick event to open task details
+      onClick={()=>console.log(task.id)}
+    >
+      <h3
+        className={`text-lg font-semibold ${titleStyles[task.status as TaskStatus]}`}
+      >
+        {task.title}
+      </h3>
+      <p className="mt-2 text-gray-600">{task.description}</p>
+      <Badge
+        variant={task.status.toLowerCase()}
+        className="mt-3 text-primary-foreground"
+      >
+        {task.status}
+      </Badge>
+    </Card>
+  );
+};
+
+const TaskColumn = ({
+  title,
+  tasks,
+  status,
+  onMoveTask,
+}: {
+  title: string;
+  tasks: Task[];
+  status: string;
+  onMoveTask: (task: Task, newStatus: string) => void;
+}) => {
+  const [{ isOver }, dropRef] = useDrop({
+    accept: ITEM_TYPE,
+    drop: (item: Task) => onMoveTask(item, status),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  return (
+    <Card
+      ref={dropRef}
+      className={`p-6 ${isOver ? "ring-2 ring-primary" : ""}`}
+    >
+      <h2 className="mb-6 text-center text-2xl font-semibold">{title}</h2>
+      <div className="space-y-6">
+        {tasks.map((task) => (
+          <DraggableTask key={task.id} task={task} />
+        ))}
+      </div>
+    </Card>
+  );
+};
+
+const DashboardContent = () => {
   const { isLoaded, userId } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchAuth = async () => {
+    const fetchTasks = async () => {
       if (!userId) {
         setError("User ID is not available.");
         setLoading(false);
@@ -24,104 +109,85 @@ const Page = () => {
 
       try {
         const data = await getAllTaskAndSubTask(userId);
-        console.log(data);
         setTasks(data.tasks as Task[]);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
+      } catch {
         setError("An error occurred while fetching tasks and subtasks.");
+      } finally {
         setLoading(false);
       }
     };
 
     if (isLoaded && userId) {
-      fetchAuth();
+      fetchTasks();
     }
   }, [isLoaded, userId]);
 
-  if (loading) {
+  const moveTask = (task: Task, newStatus: string) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((t) =>
+        t.id === task.id ? { ...t, status: newStatus } : t,
+      ),
+    );
+  };
+
+  const tasksByStatus = useMemo(
+    () => ({
+      todo: tasks.filter((task) => task.status === "TODO"),
+      inProgress: tasks.filter((task) => task.status === "IN_PROGRESS"),
+      completed: tasks.filter((task) => task.status === "COMPLETED"),
+      backlog: tasks.filter((task) => task.status === "BACKLOG"),
+    }),
+    [tasks],
+  );
+
+  if (loading)
     return <div className="text-center text-lg text-red-500">Loading...</div>;
-  }
-
-  if (error) {
+  if (error)
     return <div className="text-center text-lg text-red-500">{error}</div>;
-  }
-
-  // Separate tasks into categories by status
-  const todoTasks = tasks.filter(task => task.status === 'TODO');
-  const inProgressTasks = tasks.filter(task => task.status === 'IN_PROGRESS');
-  const completedTasks = tasks.filter(task => task.status === 'COMPLETED');
-  const backlogTasks = tasks.filter(task => task.status === 'BACKLOG');
 
   return (
-    <div className="flex h-screen items-center justify-center bg-background">
-      <div className="w-full max-w-7xl mx-auto p-6 space-y-8">
-        {/* Title */}
-        <h1 className="text-3xl font-semibold text-center mb-8 text-primary">Dashboard</h1>
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="mx-auto w-full max-w-7xl space-y-10 p-6">
+        <h1 className="text-gradient mb-8 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-center text-4xl font-extrabold text-transparent">
+          Task Dashboard
+        </h1>
 
-        {/* Task Categories */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* TODO */}
-          <Card className="p-6">
-            <div>
-              <h2 className="text-xl font-semibold text-center text-primary mb-4">TODO</h2>
-              <div className="space-y-4">
-                {todoTasks.map(task => (
-                  <Card key={task.id} className="p-4 bg-card rounded-lg shadow-lg hover:scale-105 transition-transform duration-200">
-                    <h3 className="text-lg font-medium text-primary">{task.title}</h3>
-                    <p className="text-muted mt-2">{task.description}</p>
-                    <Badge variant="todo" className="mt-2">{task.status}</Badge> {/* Assuming Badge component for status */}
-                  </Card>
-                ))}
-              </div>
-            </div>
-          </Card>
-
-          {/* IN_PROGRESS */}
-          <div>
-            <h2 className="text-xl font-semibold text-center text-primary mb-4">IN PROGRESS</h2>
-            <div className="space-y-4">
-              {inProgressTasks.map(task => (
-                <Card key={task.id} className="p-4 bg-card rounded-lg shadow-lg hover:scale-105 transition-transform duration-200">
-                  <h3 className="text-lg font-medium text-primary">{task.title}</h3>
-                  <p className="text-muted mt-2">{task.description}</p>
-                  <Badge variant="in-progress" className="mt-2">{task.status}</Badge>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* COMPLETED */}
-          <div>
-            <h2 className="text-xl font-semibold text-center text-primary mb-4">COMPLETED</h2>
-            <div className="space-y-4">
-              {completedTasks.map(task => (
-                <Card key={task.id} className="p-4 bg-card rounded-lg shadow-lg hover:scale-105 transition-transform duration-200">
-                  <h3 className="text-lg font-medium text-primary">{task.title}</h3>
-                  <p className="text-muted mt-2">{task.description}</p>
-                  <Badge variant="completed" className="mt-2">{task.status}</Badge>
-                </Card>
-              ))}
-            </div>
-          </div>
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <TaskColumn
+            title="TODO"
+            tasks={tasksByStatus.todo}
+            status="TODO"
+            onMoveTask={moveTask}
+          />
+          <TaskColumn
+            title="IN PROGRESS"
+            tasks={tasksByStatus.inProgress}
+            status="IN_PROGRESS"
+            onMoveTask={moveTask}
+          />
+          <TaskColumn
+            title="COMPLETED"
+            tasks={tasksByStatus.completed}
+            status="COMPLETED"
+            onMoveTask={moveTask}
+          />
         </div>
 
-        {/* BACKLOG */}
-        <div>
-          <h2 className="text-xl font-semibold text-center text-primary mb-4">BACKLOG</h2>
-          <div className="space-y-4">
-            {backlogTasks.map(task => (
-              <Card key={task.id} className="p-4 bg-card rounded-lg shadow-lg hover:scale-105 transition-transform duration-200">
-                <h3 className="text-lg font-medium text-primary">{task.title}</h3>
-                <p className="text-muted mt-2">{task.description}</p>
-                <Badge variant="backlog" className="mt-2">{task.status}</Badge>
-              </Card>
-            ))}
-          </div>
-        </div>
+        <TaskColumn
+          title="BACKLOG"
+          tasks={tasksByStatus.backlog}
+          status="BACKLOG"
+          onMoveTask={moveTask}
+        />
       </div>
     </div>
   );
 };
+
+const Page = () => (
+  <DndProvider backend={HTML5Backend}>
+    <DashboardContent />
+  </DndProvider>
+);
 
 export default Page;
