@@ -15,7 +15,6 @@ export async function getAllTaskAndSubTask(userId: string) {
       include: {
         tasks: {
           include: {
-            subTasks: true, // Include subtasks for each task
             assignees: {
               select: { id: true, name: true, email: true },
             },
