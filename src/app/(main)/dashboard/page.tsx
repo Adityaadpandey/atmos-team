@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllTaskAndSubTask } from "@/actions/task";
+import { getAllTaskAndSubTask, updateStatusofTask } from "@/actions/task";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Task } from "@/types";
@@ -128,6 +128,7 @@ const DashboardContent = () => {
         t.id === task.id ? { ...t, status: newStatus } : t,
       ),
     );
+    updateStatusofTask(task.id, newStatus as TaskStatus);
   };
 
   const tasksByStatus = useMemo(
