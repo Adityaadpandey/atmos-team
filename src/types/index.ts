@@ -25,7 +25,6 @@ export interface TaskMain {
   timeline: Timeline[];
 }
 
-
 export interface SubTask {
   id: string;
   title: string;

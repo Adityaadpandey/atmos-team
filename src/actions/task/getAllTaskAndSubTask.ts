@@ -28,7 +28,7 @@ export async function getAllTaskAndSubTask(userId: string) {
             team: true,
             comments: { include: { author: true } },
             timeline: { include: { previousTask: true, nextTask: true } },
-            subTasks: true,  // Assuming you want subtasks included as well
+            subTasks: true, // Assuming you want subtasks included as well
             relatedTasks: true, // Related tasks (if you want them as well)
           },
         },

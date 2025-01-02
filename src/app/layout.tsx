@@ -34,7 +34,9 @@ export default function RootLayout({
               </div>
 
               {/* Content Area */}
-              <div className="flex ml-16  min-h-screen items-center justify-center w-full p-4">{children}</div>
+              <div className="ml-16 flex min-h-screen w-full items-center justify-center p-4">
+                {children}
+              </div>
             </main>
           </ThemeProvider>
         </body>

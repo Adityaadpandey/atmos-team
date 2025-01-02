@@ -38,52 +38,59 @@ const DraggableTask = ({ task }: { task: Task }) => {
     BACKLOG: "text-red-800 dark:text-red-100",
   };
 
-
   return (
-   <Card
-  ref={dragRef}
-  className={`p-6 ${cardStyles[task.status as TaskStatus]} cursor-move rounded-xl shadow-md transition-all duration-200 ease-in-out hover:shadow-lg ${isDragging ? "opacity-50" : "opacity-100"}`}
-  onClick={() => router.push(`/dashboard/task/${task.id}`)}
->
-  {/* Header Section - Title + Deadline */}
-  <div className="flex flex-col mb-4">
-    {/* Task Title */}
-    <h3 className={`text-2xl font-semibold ${titleStyles[task.status as TaskStatus]} truncate`}>
-      {task.title}
-    </h3>
-    {/* Deadline */}
-        <div className="mt-2  flex items-center text-sm text-gray-600 dark:text-gray-400">
-          <Badge variant="primary" className="bg-background rounded-full  py-1 text-sm">
-            {"Deadline:  "+" "}
+    <Card
+      ref={dragRef}
+      className={`p-6 ${cardStyles[task.status as TaskStatus]} cursor-move rounded-xl shadow-md transition-all duration-200 ease-in-out hover:shadow-lg ${isDragging ? "opacity-50" : "opacity-100"}`}
+      onClick={() => router.push(`/dashboard/task/${task.id}`)}
+    >
+      {/* Header Section - Title + Deadline */}
+      <div className="mb-4 flex flex-col">
+        {/* Task Title */}
+        <h3
+          className={`text-2xl font-semibold ${titleStyles[task.status as TaskStatus]} truncate`}
+        >
+          {task.title}
+        </h3>
+        {/* Deadline */}
+        <div className="mt-2 flex items-center text-sm text-gray-600 dark:text-gray-400">
+          <Badge
+            variant="primary"
+            className="rounded-full bg-background py-1 text-sm"
+          >
+            {"Deadline:  " + " "}
 
-        {new Date(task.deadline).toLocaleString('en-IN', {
-          weekday: 'short',  // Day of the week (e.g., Wed)
-          day: 'numeric',    // Day of the month (1-31)
-          hour: '2-digit',   // Hour (00-23)
-          minute: '2-digit', // Minute (00-59)
-          hour12: true      // Use 24-hour clock format
-        })}
+            {new Date(task.deadline).toLocaleString("en-IN", {
+              weekday: "short", // Day of the week (e.g., Wed)
+              day: "numeric", // Day of the month (1-31)
+              hour: "2-digit", // Hour (00-23)
+              minute: "2-digit", // Minute (00-59)
+              hour12: true, // Use 24-hour clock format
+            })}
+          </Badge>
+        </div>
+      </div>
 
+      {/* Task Description */}
+      <p className="mb-4 truncate text-base text-gray-700 dark:text-gray-300">
+        {task.description}
+      </p>
+
+      {/* Assignees */}
+      {task.assignees.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-3">
+          {task.assignees.map((assignee) => (
+            <Badge
+              key={assignee.id}
+              variant="primary"
+              className="rounded-full bg-background px-3 py-1 text-sm"
+            >
+              {assignee.name}
             </Badge>
-    </div>
-  </div>
-
-  {/* Task Description */}
-  <p className="text-gray-700 dark:text-gray-300 text-base mb-4 truncate">{task.description}</p>
-
-  {/* Assignees */}
-  {task.assignees.length > 0 && (
-    <div className="flex flex-wrap gap-3 mt-3">
-      {task.assignees.map((assignee) => (
-        <Badge key={assignee.id} variant="primary" className="bg-background rounded-full px-3 py-1 text-sm">
-          {assignee.name}
-        </Badge>
-      ))}
-    </div>
-  )}
-</Card>
-
-
+          ))}
+        </div>
+      )}
+    </Card>
   );
 };
 
@@ -176,8 +183,8 @@ const DashboardContent = () => {
     return <div className="text-center text-lg text-red-500">{error}</div>;
 
   return (
-    <Card >
-      <div className="flex min-h-screen items-center justify-center bg-background w-full">
+    <Card>
+      <div className="flex min-h-screen w-full items-center justify-center bg-background">
         <div className="mx-auto w-full max-w-7xl space-y-10 p-6">
           <h1 className="text-gradient mb-8 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-center text-4xl font-extrabold text-transparent">
             Task Dashboard
