@@ -69,7 +69,7 @@ export default function TaskPage({
     return Math.round((completedTasks / task.subTasks.length) * 100);
   }, [task?.subTasks]);
 
-  const moveSubtask = async(subtask: SubTask, newStatus: string) => {
+  const moveSubtask = async (subtask: SubTask, newStatus: string) => {
     if (!task) return;
 
     setTask((prevTask) => {
@@ -77,9 +77,7 @@ export default function TaskPage({
       return {
         ...prevTask,
         subTasks: prevTask.subTasks?.map((st) =>
-          st.id === subtask.id
-            ? { ...st, status: newStatus }
-            : st
+          st.id === subtask.id ? { ...st, status: newStatus } : st,
         ),
       };
     });
