@@ -14,13 +14,22 @@ export async function getAllTaskAndSubTask(userId: string) {
       where: { id: userId },
       include: {
         tasks: {
-          include: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            deadline: true, // Include the deadline of the task
+            createdAt: true, // Include the createdAt field
+            updatedAt: true, // Include the updatedAt field
+            status: true,
             assignees: {
               select: { id: true, name: true, email: true },
             },
             team: true,
             comments: { include: { author: true } },
             timeline: { include: { previousTask: true, nextTask: true } },
+            subTasks: true,  // Assuming you want subtasks included as well
+            relatedTasks: true, // Related tasks (if you want them as well)
           },
         },
       },
@@ -32,7 +41,7 @@ export async function getAllTaskAndSubTask(userId: string) {
 
     return userTasks;
   } catch (error) {
-    console.error("Error retrieving tasks and subtasks:", error.message);
+    console.error("Error retrieving tasks and subtasks:", error); // Log the full error
     throw new Error(
       "An error occurred while retrieving the tasks and subtasks.",
     );
