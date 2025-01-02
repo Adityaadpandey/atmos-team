@@ -3,12 +3,28 @@ export interface Task {
   title: string;
   description: string;
   status: string;
+  deadline: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  comments: Comment[];
+  assignees: Assignee[];
+  team: Team;
+  timeline: Timeline[];
   // subTasks: SubTask[];
+}
+
+export interface TaskMain {
+  id: string;
+  title: string;
+  description: string;
+  status: string;
+  subTasks: SubTask[];
   comments: Comment[];
   assignees: Assignee[];
   team: Team;
   timeline: Timeline[];
 }
+
 
 export interface SubTask {
   id: string;

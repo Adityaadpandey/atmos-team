@@ -8,12 +8,14 @@ import { useAuth } from "@clerk/nextjs";
 import { useEffect, useMemo, useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useRouter } from "next/navigation";
 
 const ITEM_TYPE = "TASK";
 
 type TaskStatus = "TODO" | "IN_PROGRESS" | "COMPLETED" | "BACKLOG";
 
 const DraggableTask = ({ task }: { task: Task }) => {
+  const router = useRouter();
   const [{ isDragging }, dragRef] = useDrag({
     type: ITEM_TYPE,
     item: task,
@@ -37,38 +39,51 @@ const DraggableTask = ({ task }: { task: Task }) => {
   };
 
 
-
-
   return (
-    <Card
-      ref={dragRef}
-      className={`p-5 ${cardStyles[task.status as TaskStatus]} cursor-move rounded-xl shadow-md transition-all duration-200 ease-in-out hover:shadow-lg ${isDragging ? "opacity-50" : "opacity-100"}`}
-      // TODO: Add onClick event to open task details
-      onClick={() => console.log(task.id)}
-    >
-      <h3
-        className={`text-lg font-semibold ${titleStyles[task.status as TaskStatus]}`}
-      >
-        {task.title}
-      </h3>
-      <p className="mt-2 ">{task.description}</p>
-      {/* <Badge
-        variant={task.status.toLowerCase()}
-        className="mt-3 text-primary-foreground"
-      >
-        {task.status}
-      </Badge> */}
-      <br/>
+   <Card
+  ref={dragRef}
+  className={`p-6 ${cardStyles[task.status as TaskStatus]} cursor-move rounded-xl shadow-md transition-all duration-200 ease-in-out hover:shadow-lg ${isDragging ? "opacity-50" : "opacity-100"}`}
+  onClick={() => router.push(`/dashboard/task/${task.id}`)}
+>
+  {/* Header Section - Title + Deadline */}
+  <div className="flex flex-col mb-4">
+    {/* Task Title */}
+    <h3 className={`text-2xl font-semibold ${titleStyles[task.status as TaskStatus]} truncate`}>
+      {task.title}
+    </h3>
+    {/* Deadline */}
+        <div className="mt-2  flex items-center text-sm text-gray-600 dark:text-gray-400">
+          <Badge variant="primary" className="bg-background rounded-full  py-1 text-sm">
+            {"Deadline:  "+" "}
+
+        {new Date(task.deadline).toLocaleString('en-IN', {
+          weekday: 'short',  // Day of the week (e.g., Wed)
+          day: 'numeric',    // Day of the month (1-31)
+          hour: '2-digit',   // Hour (00-23)
+          minute: '2-digit', // Minute (00-59)
+          hour12: true      // Use 24-hour clock format
+        })}
+
+            </Badge>
+    </div>
+  </div>
+
+  {/* Task Description */}
+  <p className="text-gray-700 dark:text-gray-300 text-base mb-4 truncate">{task.description}</p>
+
+  {/* Assignees */}
+  {task.assignees.length > 0 && (
+    <div className="flex flex-wrap gap-3 mt-3">
+      {task.assignees.map((assignee) => (
+        <Badge key={assignee.id} variant="primary" className="bg-background rounded-full px-3 py-1 text-sm">
+          {assignee.name}
+        </Badge>
+      ))}
+    </div>
+  )}
+</Card>
 
 
-        {task.assignees.map((assignee) =>
-          <Badge key={assignee.id} variant="primary" className="bg-background mx-2">
-            {assignee.name}
-          </Badge>
-        )
-        }
-
-    </Card>
   );
 };
 
@@ -122,6 +137,7 @@ const DashboardContent = () => {
 
       try {
         const data = await getAllTaskAndSubTask(userId);
+        console.log(data);
         setTasks(data.tasks as Task[]);
       } catch {
         setError("An error occurred while fetching tasks and subtasks.");
