@@ -322,6 +322,8 @@ const DashboardContent = () => {
                   columns to update their status.
                 </p>
               </div>
+
+              {/* TODO: add a create task part */}
               <Button variant="outline" className="gap-2">
                 <Plus className="h-4 w-4" />
                 Create Task
