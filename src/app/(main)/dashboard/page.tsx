@@ -2,6 +2,7 @@
 
 import { getAllTaskAndSubTask, updateStatusofTask } from "@/actions/task";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Task } from "@/types";
@@ -12,6 +13,7 @@ import {
   Calendar,
   CheckCircle2,
   CircleDashed,
+  Plus,
   RotateCcw,
   Timer,
   Users,
@@ -288,15 +290,26 @@ const DashboardContent = () => {
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-background to-background/80">
       <div className="mx-auto max-w-7xl space-y-8 p-4 sm:p-6">
-        <div className="flex flex-col items-center gap-4">
-          <h1 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
-            Task Dashboard
-          </h1>
-          <p className="max-w-2xl text-center text-muted-foreground">
-            Manage and track your tasks efficiently. Drag and drop tasks between
-            columns to update their status.
-          </p>
+        <div className="relative rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-background p-6 backdrop-blur-sm">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                  Task Dashboard
+                </h1>
+                <p className="mt-2 max-w-2xl text-muted-foreground">
+                  Manage and track your tasks efficiently. Drag and drop tasks between
+                  columns to update their status.
+                </p>
+              </div>
+              <Button variant="outline" className="gap-2">
+                <Plus className="h-4 w-4" />
+                Create Task
+              </Button>
+            </div>
+          </div>
         </div>
+        
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <TaskColumn
