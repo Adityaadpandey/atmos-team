@@ -1,24 +1,34 @@
 // pages/task/[id].tsx
 "use client";
 
-import { use } from "react";
+import { getTaskById, updateStatusofSubTask } from "@/actions/task";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { SubTask, TaskMain, TaskStatus } from "@/types";
+import {
+  AlertCircle,
+  BarChart2,
+  Calendar,
+  Clock,
+  Plus,
+  Users,
+} from "lucide-react";
+import { use, useEffect, useMemo, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useEffect, useMemo, useState } from "react";
-import { Task, TaskStatus, SubTask } from "@/types";
 import { TaskColumn } from "../../_components/TaskColumn";
-import { AlertCircle, Calendar, Clock, Users, BarChart2, Plus } from "lucide-react";
-import { getTaskById } from "@/actions/task";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 
 const SUBTASK_ITEM_TYPE = "SUBTASK";
 
-export default function TaskPage({ params }: { params: Promise<{ TaskId: string }> }) {
+export default function TaskPage({
+  params,
+}: {
+  params: Promise<{ TaskId: string }>;
+}) {
   const { TaskId } = use(params);
-  const [task, setTask] = useState<Task | null>(null);
+  const [task, setTask] = useState<TaskMain | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +37,7 @@ export default function TaskPage({ params }: { params: Promise<{ TaskId: string 
       try {
         const response = await getTaskById(TaskId);
         setTask(response);
-      } catch (err) {
+      } catch {
         setError("Failed to load task details");
       } finally {
         setLoading(false);
@@ -41,8 +51,12 @@ export default function TaskPage({ params }: { params: Promise<{ TaskId: string 
     if (!task?.subTasks) return {};
     return {
       todo: task.subTasks.filter((subtask) => subtask.status === "TODO"),
-      inProgress: task.subTasks.filter((subtask) => subtask.status === "IN_PROGRESS"),
-      completed: task.subTasks.filter((subtask) => subtask.status === "COMPLETED"),
+      inProgress: task.subTasks.filter(
+        (subtask) => subtask.status === "IN_PROGRESS",
+      ),
+      completed: task.subTasks.filter(
+        (subtask) => subtask.status === "COMPLETED",
+      ),
       backlog: task.subTasks.filter((subtask) => subtask.status === "BACKLOG"),
     };
   }, [task?.subTasks]);
@@ -50,12 +64,12 @@ export default function TaskPage({ params }: { params: Promise<{ TaskId: string 
   const taskProgress = useMemo(() => {
     if (!task?.subTasks?.length) return 0;
     const completedTasks = task.subTasks.filter(
-      (subtask) => subtask.status === "COMPLETED"
+      (subtask) => subtask.status === "COMPLETED",
     ).length;
     return Math.round((completedTasks / task.subTasks.length) * 100);
   }, [task?.subTasks]);
 
-  const moveSubtask = async (subtask: SubTask, newStatus: string) => {
+  const moveSubtask = async(subtask: SubTask, newStatus: string) => {
     if (!task) return;
 
     setTask((prevTask) => {
@@ -63,28 +77,14 @@ export default function TaskPage({ params }: { params: Promise<{ TaskId: string 
       return {
         ...prevTask,
         subTasks: prevTask.subTasks?.map((st) =>
-          st.id === subtask.id ? { ...st, status: newStatus as TaskStatus } : st
+          st.id === subtask.id
+            ? { ...st, status: newStatus }
+            : st
         ),
       };
     });
 
-    try {
-      await fetch(`/api/subtasks/${subtask.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      });
-    } catch (err) {
-      setTask((prevTask) => {
-        if (!prevTask) return null;
-        return {
-          ...prevTask,
-          subTasks: prevTask.subTasks?.map((st) =>
-            st.id === subtask.id ? { ...st, status: subtask.status } : st
-          ),
-        };
-      });
-    }
+    await updateStatusofSubTask(subtask.id, newStatus as TaskStatus);
   };
 
   if (loading) {
@@ -92,7 +92,9 @@ export default function TaskPage({ params }: { params: Promise<{ TaskId: string 
       <div className="flex h-screen items-center justify-center bg-gradient-to-b from-background to-background/80">
         <div className="flex flex-col items-center gap-4">
           <div className="h-32 w-32 animate-spin rounded-full border-b-2 border-primary"></div>
-          <p className="text-lg text-muted-foreground">Loading task details...</p>
+          <p className="text-lg text-muted-foreground">
+            Loading task details...
+          </p>
         </div>
       </div>
     );
@@ -140,7 +142,9 @@ export default function TaskPage({ params }: { params: Promise<{ TaskId: string 
                     <Calendar className="h-5 w-5 text-muted-foreground" />
                     <div>
                       <p className="text-sm text-muted-foreground">Deadline</p>
-                      <p className={`font-medium ${isOverdue ? "text-red-500" : ""}`}>
+                      <p
+                        className={`font-medium ${isOverdue ? "text-red-500" : ""}`}
+                      >
                         {new Date(task.deadline).toLocaleDateString()}
                       </p>
                     </div>
@@ -182,7 +186,9 @@ export default function TaskPage({ params }: { params: Promise<{ TaskId: string 
                       <p className="text-sm text-muted-foreground">Progress</p>
                       <div className="flex items-center gap-2">
                         <Progress value={taskProgress} className="flex-1" />
-                        <span className="text-sm font-medium">{taskProgress}%</span>
+                        <span className="text-sm font-medium">
+                          {taskProgress}%
+                        </span>
                       </div>
                     </div>
                   </CardContent>

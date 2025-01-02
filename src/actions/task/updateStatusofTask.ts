@@ -26,7 +26,7 @@ export const updateStatusofSubTask = async (
   status: TaskStatus,
 ) => {
   try {
-    await db.task.update({
+    await db.subTask.update({
       where: {
         id: taskId,
       },

@@ -20,6 +20,9 @@ export interface TaskMain {
   title: string;
   description: string;
   status: string;
+  deadline: Date;
+  createdAt: Date;
+  updatedAt: Date;
   subTasks: SubTask[];
   comments: Comment[];
   assignees: Assignee[];

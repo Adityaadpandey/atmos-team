@@ -217,7 +217,6 @@ const TaskColumn = ({
 };
 
 const DashboardContent = () => {
-  // ... (existing state and effects remain the same)
   const { isLoaded, userId } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
