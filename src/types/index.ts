@@ -13,6 +13,8 @@ export interface Task {
   // subTasks: SubTask[];
 }
 
+export type TaskStatus = "TODO" | "IN_PROGRESS" | "COMPLETED" | "BACKLOG";
+
 export interface TaskMain {
   id: string;
   title: string;
