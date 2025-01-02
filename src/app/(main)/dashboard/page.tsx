@@ -66,8 +66,6 @@ const DraggableTask = ({ task }: { task: Task }) => {
     BACKLOG: "bg-red-500",
   };
 
-
-
   const deadline = new Date(task.deadline);
   const isOverdue = deadline < new Date();
 
@@ -273,9 +271,12 @@ const DashboardContent = () => {
   const stats = useMemo(() => {
     const totalTasks = tasks.length;
     const completedTasks = tasksByStatus.completed.length;
-    const progressPercentage = totalTasks ? (completedTasks / totalTasks) * 100 : 0;
+    const progressPercentage = totalTasks
+      ? (completedTasks / totalTasks) * 100
+      : 0;
     const upcomingDeadlines = tasks.filter(
-      task => new Date(task.deadline) > new Date() && task.status !== "COMPLETED"
+      (task) =>
+        new Date(task.deadline) > new Date() && task.status !== "COMPLETED",
     ).length;
 
     return {
@@ -318,8 +319,8 @@ const DashboardContent = () => {
                   Task Dashboard
                 </h1>
                 <p className="mt-2 max-w-2xl text-muted-foreground">
-                  Manage and track your tasks efficiently. Drag and drop tasks between
-                  columns to update their status.
+                  Manage and track your tasks efficiently. Drag and drop tasks
+                  between columns to update their status.
                 </p>
               </div>
 
@@ -356,7 +357,9 @@ const DashboardContent = () => {
                 <CardContent className="flex items-center gap-2 p-4">
                   <Calendar className="h-5 w-5 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Upcoming Deadlines</p>
+                    <p className="text-sm text-muted-foreground">
+                      Upcoming Deadlines
+                    </p>
                     <p className="font-medium">{stats.upcoming}</p>
                   </div>
                 </CardContent>
@@ -366,7 +369,9 @@ const DashboardContent = () => {
                 <CardContent className="flex items-center gap-2 p-4">
                   <BarChart2 className="h-5 w-5 text-muted-foreground" />
                   <div className="w-full">
-                    <p className="text-sm text-muted-foreground">Overall Progress</p>
+                    <p className="text-sm text-muted-foreground">
+                      Overall Progress
+                    </p>
                     <div className="flex items-center gap-2">
                       <Progress value={stats.progress} className="flex-1" />
                       <span className="text-sm font-medium">
