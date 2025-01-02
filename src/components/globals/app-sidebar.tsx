@@ -15,14 +15,9 @@ import Payment from "@/components/icons/payment";
 import Settings from "@/components/icons/settings";
 import Workflows from "@/components/icons/workflows";
 import { Separator } from "@/components/ui/separator";
-import clsx from "clsx";
-import {
-  Database,
-  GitBranch,
-  LucideMousePointerClick,
-  User,
-} from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
+import clsx from "clsx";
+import { Database, GitBranch, LucideMousePointerClick } from "lucide-react";
 
 const menuOptions = [
   { name: "Dashboard", Component: Home, href: "/dashboard" },
@@ -106,16 +101,14 @@ const MenuOptions = () => {
       <div className="fixed bottom-0 my-2 flex flex-col gap-5 rounded-full border-[1px] p-2 py-2 dark:bg-[#353346]/30">
         <ModeToggle />
 
-        <div className="flex items-center justify-center ">
+        <div className="flex items-center justify-center">
           <UserButton
-              
             appearance={{
               elements: {
                 userButtonAvatarBox: "w-8 h-8",
                 userButton:
                   " border border-neutral-200 dark:border-white/[0.2] rounded-full",
               },
-
             }}
           />
           {/* <User className="text-muted-foreground" size={18} /> */}
