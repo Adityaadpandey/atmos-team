@@ -2,45 +2,52 @@
 
 import { db } from "@/lib/db";
 
-// Server action to create a task
 export async function createTask({
   title,
   description,
   deadline,
   teamId,
-  assigneeIds,
+  assigneeEmails,
 }: {
   title: string;
   description?: string;
   deadline: string;
   teamId?: string;
-  assigneeIds?: string[];
+  assigneeEmails?: string[];
 }) {
   try {
-    // Validate required fields
     if (!title || !deadline) {
       throw new Error("Title and deadline are required.");
     }
 
     const parsedDeadline = new Date(deadline);
     if (isNaN(parsedDeadline.getTime())) {
-      throw new Error("Invalid deadline format. Please provide a valid date.");
+      throw new Error("Invalid deadline format.");
     }
 
-    // Prepare task data
+    // Find users by email
+    const users = assigneeEmails?.length ? await db.user.findMany({
+      where: {
+        email: {
+          in: assigneeEmails
+        }
+      },
+      select: {
+        id: true
+      }
+    }) : [];
+
     const taskData = {
       title,
       description: description || null,
       deadline: parsedDeadline,
       team: teamId ? { connect: { id: teamId } } : undefined,
       assignees: {
-        connect: assigneeIds?.map((userId: string) => ({ id: userId })) || [],
+        connect: users.map(user => ({ id: user.id }))
       },
     };
 
-    // Create the task in the database
     const newTask = await db.task.create({ data: taskData });
-
     return newTask;
   } catch (error) {
     console.error("Error creating task:", error);

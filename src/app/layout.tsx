@@ -1,10 +1,8 @@
 // layout.tsx
-import MenuOptions from "@/components/globals/app-sidebar";
 import { ThemeProvider } from "@/components/globals/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
-import ClientLayout from "./client-layout";
 import "./globals.css";
 
 const font = DM_Sans({ subsets: ["latin"] });
@@ -29,7 +27,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <ClientLayout>{children}</ClientLayout>
+            {children}
           </ThemeProvider>
         </body>
       </html>

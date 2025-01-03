@@ -7,7 +7,7 @@ const RefinedCosmicText = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: any) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
 
