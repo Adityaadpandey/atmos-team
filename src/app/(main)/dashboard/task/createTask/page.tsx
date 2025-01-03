@@ -76,7 +76,7 @@ const CreateTaskPage = () => {
             e.target.reset();
             setEmails([]);
             setSubtasks([]);
-        } catch (error) {
+        } catch  {
             // toast({
             //     title: "Error creating task",
             //     variant: "destructive"
