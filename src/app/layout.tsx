@@ -28,9 +28,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <AlertProvider>
-            {children}
-            </AlertProvider>
+            <AlertProvider>{children}</AlertProvider>
           </ThemeProvider>
         </body>
       </html>
