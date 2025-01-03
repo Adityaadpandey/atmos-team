@@ -1,11 +1,12 @@
 // components/TaskCard.tsx
+import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { AlertCircle, Calendar, Users } from "lucide-react";
-import { useDrag } from "react-dnd";
 import { useRouter } from "next/navigation";
+import { useDrag } from "react-dnd";
+import { StatusIcon } from "./StatusIcon";
 
 interface TaskCardProps {
   task: Task;

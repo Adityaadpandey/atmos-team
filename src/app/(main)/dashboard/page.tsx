@@ -221,6 +221,7 @@ const TaskColumn = ({
 };
 
 const DashboardContent = () => {
+  const router = useRouter();
   const { isLoaded, userId } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -325,7 +326,11 @@ const DashboardContent = () => {
               </div>
 
               {/* TODO: add a create task part */}
-              <Button variant="outline" className="gap-2">
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={() => router.push("/dashboard/task/createTask")}
+              >
                 <Plus className="h-4 w-4" />
                 Create Task
               </Button>
