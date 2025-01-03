@@ -10,8 +10,10 @@ import { TaskStatus } from "@prisma/client";
 import { AlertCircle, Bookmark, Calendar, Plus, Target, Users, X } from "lucide-react";
 // import { toast } from "@/components/ui/use-toast";
 import React, { useState } from 'react';
+import {useAlert } from "@/hooks/Alert-Provider";
 
 const CreateTaskPage = () => {
+    const { showAlert } = useAlert();
     const [loading, setLoading] = useState(false);
     const [emails, setEmails] = useState<string[]>([]);
     const [subtasks, setSubtasks] = useState<string[]>([]);
@@ -72,15 +74,22 @@ const CreateTaskPage = () => {
                 })
             ));
 
-            // toast({ title: "Task created successfully" });
+            showAlert(
+               "Successful",
+               "Your data has been saved successfully.",
+                "success"
+            );
+
             e.target.reset();
             setEmails([]);
             setSubtasks([]);
-        } catch  {
-            // toast({
-            //     title: "Error creating task",
-            //     variant: "destructive"
-            // });
+        } catch {
+            showAlert(
+                "Error!",
+                "Please add a form title!",
+                "error",
+            );
+
         } finally {
             setLoading(false);
         }
