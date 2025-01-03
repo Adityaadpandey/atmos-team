@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
+import { AlertProvider } from "@/hooks/Alert-Provider";
 
 const font = DM_Sans({ subsets: ["latin"] });
 
@@ -27,7 +28,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
+            <AlertProvider>
             {children}
+            </AlertProvider>
           </ThemeProvider>
         </body>
       </html>
