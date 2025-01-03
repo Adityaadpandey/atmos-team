@@ -26,16 +26,18 @@ export async function createTask({
     }
 
     // Find users by email
-    const users = assigneeEmails?.length ? await db.user.findMany({
-      where: {
-        email: {
-          in: assigneeEmails
-        }
-      },
-      select: {
-        id: true
-      }
-    }) : [];
+    const users = assigneeEmails?.length
+      ? await db.user.findMany({
+          where: {
+            email: {
+              in: assigneeEmails,
+            },
+          },
+          select: {
+            id: true,
+          },
+        })
+      : [];
 
     const taskData = {
       title,
@@ -43,7 +45,7 @@ export async function createTask({
       deadline: parsedDeadline,
       team: teamId ? { connect: { id: teamId } } : undefined,
       assignees: {
-        connect: users.map(user => ({ id: user.id }))
+        connect: users.map((user) => ({ id: user.id })),
       },
     };
 
