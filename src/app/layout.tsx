@@ -7,10 +7,7 @@ import "./globals.css";
 import { AlertProvider } from "@/hooks/Alert-Provider";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
-
 import { AppSidebar } from "@/components/globals/sidebar/appSidebar";
-
-
 
 const font = DM_Sans({ subsets: ["latin"] });
 
@@ -37,7 +34,7 @@ export default function RootLayout({
             <AlertProvider>
               <SidebarProvider>
                 <AppSidebar />
-                  <SidebarTrigger className="" />
+                <SidebarTrigger className="" />
                 <div className="h-full w-full max-w-full px-4 py-6 sm:px-6 lg:px-8">
                   {children}
                 </div>
