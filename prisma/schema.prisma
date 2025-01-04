@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,89 +9,267 @@ datasource db {
 
 // ===== USER MODEL =====
 model User {
-  id        String    @id @default(cuid())
+  id                  String            @id @default(cuid())
+  name                String
+  imageUrl            String?
+  email               String            @unique
+  role                Role              @default(USER)
+  teams               Team[]            @relation("TeamMembers")
+  ownedTeams          Team[]            @relation("TeamOwner")
+  tasks               Task[]            @relation("AssignedTasks")
+  createdTasks        Task[]            @relation("TaskCreator")
+  comments            Comment[]
+  notifications       Notification[]
+  settings            UserSettings?
+  status              UserStatus        @default(ACTIVE)
+  department          String?
+  position            String?
+  skills              Skill[]
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  lastActive          DateTime          @default(now())
+  managedTeamSettings TeamSettings[]    @relation("TeamSettingsManager")
+  taskViews           TaskView[]
+  workspaces          WorkspaceMember[]
+  // Add activity logging
+  activityLogs        ActivityLog[]
+  SubTask             SubTask[]
+  TeamSettings        TeamSettings[]
+}
+
+// ===== USER SETTINGS MODEL =====
+model UserSettings {
+  id                 String        @id @default(cuid())
+  user               User          @relation(fields: [userId], references: [id])
+  userId             String        @unique
+  emailNotifications Boolean       @default(true)
+  pushNotifications  Boolean       @default(true)
+  theme              Theme         @default(DARK)
+  language           String        @default("en")
+  timeZone           String        @default("UTC")
+  workingHours       WorkingHours?
+  defaultView        ViewType      @default(LIST)
+}
+
+// ===== WORKING HOURS =====
+model WorkingHours {
+  id           String       @id @default(cuid())
+  userSettings UserSettings @relation(fields: [settingsId], references: [id])
+  settingsId   String       @unique
+  monday       Int          @default(8)
+  tuesday      Int          @default(8)
+  wednesday    Int          @default(8)
+  thursday     Int          @default(8)
+  friday       Int          @default(8)
+  saturday     Int          @default(0)
+  sunday       Int          @default(0)
+}
+
+// ===== WORKSPACE MODEL =====
+model Workspace {
+  id          String            @id @default(cuid())
+  name        String
+  description String?
+  members     WorkspaceMember[]
+  teams       Team[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model WorkspaceMember {
+  id          String        @id @default(cuid())
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id])
+  workspaceId String
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String
+  role        WorkspaceRole @default(MEMBER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([workspaceId, userId])
+}
+
+// ===== TASK VIEW MODEL =====
+model TaskView {
+  id        String   @id @default(cuid())
   name      String
-  imageUrl  String?
-  email     String    @unique
-  role      Role      @default(USER)
-  teams     Team[]    @relation("TeamMembers") // Relation to the teams the user is a part of
-  tasks     Task[]    @relation("AssignedTasks") // Tasks assigned to the user
-  comments  Comment[] // Comments made by the user
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  type      ViewType
+  filters   Json?
+  sorting   Json?
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ===== ACTIVITY LOG =====
+model ActivityLog {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
 }
 
 // ===== TEAM MODEL =====
 model Team {
-  id        String   @id @default(cuid())
-  name      String
-  members   User[]   @relation("TeamMembers") // Members of the team
-  tasks     Task[]   @relation("TeamTasks") // Tasks associated with the team
-  createdAt DateTime @default(now())
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  owner       User          @relation("TeamOwner", fields: [ownerId], references: [id])
+  ownerId     String
+  members     User[]        @relation("TeamMembers")
+  tasks       Task[]        @relation("TeamTasks")
+  isArchived  Boolean       @default(false)
+  settings    TeamSettings?
+  department  String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  Workspace Workspace[]
+}
+
+// ===== TEAM SETTINGS MODEL =====
+model TeamSettings {
+  id                String     @id @default(cuid())
+  team              Team       @relation(fields: [teamId], references: [id])
+  teamId            String     @unique
+  defaultAssignee   User?      @relation(fields: [defaultAssigneeId], references: [id])
+  defaultAssigneeId String?
+  visibility        Visibility @default(PRIVATE)
+  autoAssignment    Boolean    @default(false)
+
+  User User[] @relation("TeamSettingsManager")
 }
 
 // ===== TASK MODEL =====
 model Task {
-  id             String     @id @default(cuid())
+  id             String       @id @default(cuid())
   title          String
   description    String?
-  deadline       DateTime
-  status         TaskStatus @default(TODO) // Status of the task (e.g., TODO, IN_PROGRESS, etc.)
-  assignees      User[]     @relation("AssignedTasks") // Users assigned to the task
+  priority       Priority     @default(MEDIUM)
+  deadline       DateTime?
+  status         TaskStatus   @default(TODO)
+  assignees      User[]       @relation("AssignedTasks")
+  creator        User         @relation("TaskCreator", fields: [creatorId], references: [id])
+  creatorId      String
   teamId         String?
-  team           Team?      @relation("TeamTasks", fields: [teamId], references: [id]) // Team associated with the task
-  subTasks       SubTask[] // Subtasks under this task
-  comments       Comment[] // Comments on the task
-  timeline       Timeline[] @relation("TaskTimeline") // Timeline for task dependencies
-  relatedTasks   Task[]     @relation("RelatedTasks") // Tasks related to this task
-  prerequisiteOf Task[]     @relation("RelatedTasks") // Tasks dependent on this task
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
-  previousTasks  Timeline[] @relation("TaskPrevious") // Previous tasks in the timeline
-  nextTasks      Timeline[] @relation("TaskNext") // Next tasks in the timeline
+  team           Team?        @relation("TeamTasks", fields: [teamId], references: [id])
+  subTasks       SubTask[]
+  comments       Comment[]
+  relatedTasks   Task[]       @relation("RelatedTasks")
+  prerequisiteOf Task[]       @relation("RelatedTasks")
+  attachments    Attachment[]
+  estimatedHours Float?
+  actualHours    Float?
+  isArchived     Boolean      @default(false)
+  startDate      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 // ===== SUBTASK MODEL =====
 model SubTask {
-  id         String     @id @default(cuid())
-  title      String
-  status     TaskStatus @default(TODO) // Status of the subtask
-  parentTask Task       @relation(fields: [taskId], references: [id]) // Parent task of the subtask
-  taskId     String
-  comments   Comment[] // Comments on the subtask
-  createdAt  DateTime   @default(now())
+  id             String     @id @default(cuid())
+  title          String
+  description    String?
+  status         TaskStatus @default(TODO)
+  priority       Priority   @default(MEDIUM)
+  parentTask     Task       @relation(fields: [taskId], references: [id])
+  taskId         String
+  assignee       User?      @relation(fields: [assigneeId], references: [id])
+  assigneeId     String?
+  comments       Comment[]
+  estimatedHours Float?
+  actualHours    Float?
+  completedAt    DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
 }
 
 // ===== COMMENT MODEL =====
 model Comment {
+  id            String       @id @default(cuid())
+  text          String
+  author        User         @relation(fields: [authorId], references: [id])
+  authorId      String
+  task          Task?        @relation(fields: [taskId], references: [id])
+  subTask       SubTask?     @relation(fields: [subTaskId], references: [id])
+  taskId        String?
+  subTaskId     String?
+  attachments   Attachment[]
+  parentComment Comment?     @relation("CommentReplies", fields: [parentId], references: [id])
+  parentId      String?
+  replies       Comment[]    @relation("CommentReplies")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+// ===== NOTIFICATION MODEL =====
+model Notification {
+  id        String           @id @default(cuid())
+  type      NotificationType
+  title     String
+  message   String
+  user      User             @relation(fields: [userId], references: [id])
+  userId    String
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+}
+
+// ===== ATTACHMENT MODEL =====
+model Attachment {
   id        String   @id @default(cuid())
-  text      String
-  author    User     @relation(fields: [authorId], references: [id]) // User who wrote the comment
-  authorId  String
-  task      Task?    @relation(fields: [taskId], references: [id]) // Task the comment belongs to
-  subTask   SubTask? @relation(fields: [subTaskId], references: [id]) // Subtask the comment belongs to
+  name      String
+  url       String
+  type      String
+  size      Int
+  task      Task?    @relation(fields: [taskId], references: [id])
   taskId    String?
-  subTaskId String?
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId String?
   createdAt DateTime @default(now())
 }
 
-// ===== TIMELINE MODEL =====
-model Timeline {
-  id             String  @id @default(cuid())
-  task           Task    @relation("TaskTimeline", fields: [taskId], references: [id]) // Task linked to the timeline
-  taskId         String
-  previousTask   Task?   @relation("TaskPrevious", fields: [previousTaskId], references: [id]) // Previous task in the timeline
-  previousTaskId String?
-  nextTask       Task?   @relation("TaskNext", fields: [nextTaskId], references: [id]) // Next task in the timeline
-  nextTaskId     String?
-}
+
 
 // ===== ENUMS =====
 enum TaskStatus {
   TODO
   IN_PROGRESS
+  IN_REVIEW
+  BLOCKED
   COMPLETED
   BACKLOG
+  CANCELLED
+}
+
+// ===== ADDITIONAL ENUMS =====
+enum ViewType {
+  LIST
+  BOARD
+  CALENDAR
+  TIMELINE
+  GANTT
+}
+
+enum WorkspaceRole {
+  OWNER
+  ADMIN
+  MEMBER
+  GUEST
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
 }
 
 enum Role {
@@ -102,4 +277,34 @@ enum Role {
   USER
   TEAM_LEADER
   MANAGER
+  VIEWER
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  AWAY
+  DO_NOT_DISTURB
+}
+
+enum NotificationType {
+  TASK_ASSIGNED
+  TASK_UPDATED
+  TASK_COMPLETED
+  COMMENT_ADDED
+  DEADLINE_APPROACHING
+  TEAM_INVITATION
+  MENTION
+}
+
+enum Theme {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+  TEAM_ONLY
 }

@@ -8,12 +8,16 @@ export async function createTask({
   deadline,
   teamId,
   assigneeEmails,
+  priority = "MEDIUM", // Default priority
+  tags,
 }: {
   title: string;
   description?: string;
   deadline: string;
   teamId?: string;
   assigneeEmails?: string[];
+  priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT"; // Enum from schema
+  tags?: string[]; // Array of tag names
 }) {
   try {
     if (!title || !deadline) {
@@ -28,24 +32,42 @@ export async function createTask({
     // Find users by email
     const users = assigneeEmails?.length
       ? await db.user.findMany({
-          where: {
-            email: {
-              in: assigneeEmails,
-            },
+        where: {
+          email: {
+            in: assigneeEmails,
           },
-          select: {
-            id: true,
-          },
+        },
+        select: {
+          id: true,
+        },
+      })
+      : [];
+
+    // Find or create tags
+    const tagConnections = tags?.length
+      ? await Promise.all(
+        tags.map(async (tagName) => {
+          const tag = await db.tag.upsert({
+            where: { name: tagName },
+            update: {},
+            create: { name: tagName, color: "#000000" }, // Default color, update as needed
+          });
+          return { id: tag.id };
         })
+      )
       : [];
 
     const taskData = {
       title,
       description: description || null,
       deadline: parsedDeadline,
+      priority,
       team: teamId ? { connect: { id: teamId } } : undefined,
       assignees: {
         connect: users.map((user) => ({ id: user.id })),
+      },
+      tags: {
+        connect: tagConnections,
       },
     };
 
