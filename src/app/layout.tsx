@@ -8,6 +8,7 @@ import { AlertProvider } from "@/hooks/Alert-Provider";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 import { AppSidebar } from "@/components/globals/sidebar/appSidebar";
+import { UserProvider } from "@/hooks/userProvider";
 
 const font = DM_Sans({ subsets: ["latin"] });
 
@@ -25,6 +26,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={`${font.className} overflow-x-hidden`}>
+          <UserProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
@@ -41,6 +43,7 @@ export default function RootLayout({
               </SidebarProvider>
             </AlertProvider>
           </ThemeProvider>
+          </UserProvider>
         </body>
       </html>
     </ClerkProvider>
