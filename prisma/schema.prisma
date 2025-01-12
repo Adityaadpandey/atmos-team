@@ -21,8 +21,6 @@ model User {
   comments            Comment[]
   notifications       Notification[]
   status              UserStatus        @default(ACTIVE)
-  department          String?
-  position            String?
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
   lastActive          DateTime          @default(now())
