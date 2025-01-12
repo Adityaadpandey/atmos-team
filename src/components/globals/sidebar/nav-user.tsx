@@ -32,7 +32,10 @@ import { useClerk } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 export function NavUser() {
-  const { userData, isLoading } = useUser();
+  const { userData, isLoading } = useUser() as {
+    userData: { avatar: string; name: string; email: string };
+    isLoading: boolean;
+  };
   const { isMobile } = useSidebar();
   const { signOut } = useClerk();
   const router = useRouter();
@@ -49,7 +52,7 @@ export function NavUser() {
             <Skeleton className="h-8 w-8 rounded-lg" />
             <div className="grid flex-1">
               <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-3 w-32 mt-1" />
+              <Skeleton className="mt-1 h-3 w-32" />
             </div>
           </div>
         </SidebarMenuItem>
@@ -69,7 +72,11 @@ export function NavUser() {
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={userData.avatar} alt={userData.name} />
                 <AvatarFallback className="rounded-lg">
-                  {userData.name.split(" ").map(word => word[0]).join("").toUpperCase()}
+                  {userData.name
+                    .split(" ")
+                    .map((word) => word[0])
+                    .join("")
+                    .toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -90,11 +97,17 @@ export function NavUser() {
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={userData.avatar} alt={userData.name} />
                   <AvatarFallback className="rounded-lg">
-                    {userData.name.split(" ").map(word => word[0]).join("").toUpperCase()}
+                    {userData.name
+                      .split(" ")
+                      .map((word) => word[0])
+                      .join("")
+                      .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{userData.name}</span>
+                  <span className="truncate font-semibold">
+                    {userData.name}
+                  </span>
                   <span className="truncate text-xs">{userData.email}</span>
                 </div>
               </div>

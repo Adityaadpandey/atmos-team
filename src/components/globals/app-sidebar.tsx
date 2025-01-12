@@ -20,7 +20,7 @@ import clsx from "clsx";
 import { Database, GitBranch, LucideMousePointerClick } from "lucide-react";
 
 const menuOptions = [
-  { name: "Dashboard", Component: Home, href: "/dashboard" },
+  { name: "Dashboard", Component: Home, href: "/team" },
   { name: "Workflows", Component: Workflows, href: "/workflows" },
   { name: "Settings", Component: Settings, href: "/settings" },
   { name: "Connections", Component: Category, href: "/connections" },

@@ -1,12 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import { getAssignedTask } from "./actions/task/getAssignedTask";
 
-const prisma = new PrismaClient();
-
-const jo = async () => {
-  const task = await prisma.task.findUnique({
-    where: { id: "cm59lsr3q0003iusbke0qn7he" },
+const take = async () => {
+  const d = await getAssignedTask({
+    userId: "user_2rBY1f9KnjxH4n5k8CRMbaAqDnC",
   });
-  console.log(task);
+  console.log(d);
 };
-
-jo();
+take();

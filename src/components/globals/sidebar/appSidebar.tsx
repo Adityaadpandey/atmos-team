@@ -4,13 +4,11 @@ import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
-  Bot,
+  ChartBarBig,
   Command,
-  Frame,
   GalleryVerticalEnd,
   Map,
-  PieChart,
-  Settings2,
+  Home,
   SquareTerminal,
 } from "lucide-react";
 
@@ -25,7 +23,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useAuth } from "@clerk/nextjs";
+import { getLatestTask } from "@/actions/cron-tasks";
 
 const TEAMS = [
   { name: "Acme Inc", logo: GalleryVerticalEnd, plan: "Enterprise" },
@@ -33,71 +31,64 @@ const TEAMS = [
   { name: "Evil Corp.", logo: Command, plan: "Free" },
 ];
 
-const NAV_MAIN = [
+const initialNavMain = [
   {
-    title: "Playground",
-    url: "#",
+    title: "Dashboard",
+    url: "/team",
     icon: SquareTerminal,
     isActive: true,
     items: [
-      { title: "History", url: "#" },
-      { title: "Starred", url: "#" },
-      { title: "Settings", url: "#" },
+      { title: "Team", url: "/team" },
+      { title: "Personal", url: "/personal" },
+      { title: "Assigned", url: "/assigned" },
     ],
   },
   {
-    title: "Models",
+    title: "Recent Task",
     url: "#",
-    icon: Bot,
-    items: [
-      { title: "Genesis", url: "#" },
-      { title: "Explorer", url: "#" },
-      { title: "Quantum", url: "#" },
-    ],
-  },
-  {
-    title: "Documentation",
-    url: "#",
+    isActive: true,
     icon: BookOpen,
-    items: [
-      { title: "Introduction", url: "#" },
-      { title: "Get Started", url: "#" },
-      { title: "Tutorials", url: "#" },
-      { title: "Changelog", url: "#" },
-    ],
+    items: [],
   },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings2,
-    items: [
-      { title: "General", url: "#" },
-      { title: "Team", url: "#" },
-      { title: "Billing", url: "#" },
-      { title: "Limits", url: "#" },
-    ],
-  },
+  // {
+  //   title: "Todays Tasks",
+  //   url: "/today-task",
+  //   isActive: true,
+  //   icon: Bot,
+  //   items: [
+  //     { title: "View", url: "#" },
+  //     { title: "Add", url: "#" },
+  //   ],
+  // },
 ];
 
 const PROJECTS = [
-  { name: "Design Engineering", url: "#", icon: Frame },
-  { name: "Sales & Marketing", url: "#", icon: PieChart },
-  { name: "Travel", url: "#", icon: Map },
+  { name: "Time Line", url: "/today-task", icon: ChartBarBig },
+  { name: "Home", url: "/", icon: Home },
+  { name: "Mail", url: "#", icon: Map },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { isLoaded, user } = useAuth();
+  const [navMain, setNavMain] = React.useState(initialNavMain);
 
-  if (!isLoaded) {
-    // Show a loading spinner or placeholder UI
-    return <div>Loading...</div>;
-  }
+  React.useEffect(() => {
+    const populateNavMain = async () => {
+      const latestTasks = await getLatestTask();
+      const topThreeTasks = latestTasks.slice(0, 3);
+      const recentOnes = topThreeTasks.map((task) => ({
+        title: task.title,
+        url: `/team/task/${task.id}`, // Create URL using the task's id
+      }));
 
-  const USER_DATA = {
-    name: user?.fullName || "Guest",
-    email: user?.emailAddress || "guest@example.com",
-    avatar: user?.profileImageUrl || "/avatars/default.jpg",
-  };
+      setNavMain((prevNavMain) => {
+        const updatedNavMain = [...prevNavMain];
+        updatedNavMain[1].items = recentOnes;
+        return updatedNavMain;
+      });
+    };
+
+    populateNavMain();
+  }, []);
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -105,11 +96,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={TEAMS} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={NAV_MAIN} />
+        <NavMain items={navMain} />
         <NavProjects projects={PROJECTS} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser  />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

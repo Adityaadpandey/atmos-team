@@ -1,25 +1,59 @@
+"use server";
+
 import { db } from "@/lib/db";
 
-export async function createCommentOnTask(taskId: string, text: string) {
+type CreateTaskCommentInput = {
+  taskId: string;
+  text: string;
+  authorId: string;
+};
+
+export async function createCommentOnTask({
+  taskId,
+  text,
+  authorId,
+}: CreateTaskCommentInput) {
   try {
-    if (!text) {
-      throw new Error("Text is required.");
+    // Input validation
+    if (!text?.trim()) {
+      throw new Error("Comment text cannot be empty");
     }
+
     if (!taskId) {
-      throw new Error("TaskId is required.");
+      throw new Error("Task ID is required");
     }
 
-    const commentData = {
-      text,
-      task: { connect: { id: taskId } },
-      author: { connect: { id: "authorId" } }, // replace "authorId" with the actual author ID
-    };
+    if (!authorId) {
+      throw new Error("Author ID is required");
+    }
 
-    const newComment = await db.comment.create({ data: commentData });
+    // Verify task exists
+    const task = await db.task.findUnique({
+      where: { id: taskId },
+    });
+
+    if (!task) {
+      throw new Error("Task not found");
+    }
+
+    // Create comment
+    const newComment = await db.comment.create({
+      data: {
+        text: text.trim(),
+        task: { connect: { id: taskId } },
+        author: { connect: { id: authorId } },
+      },
+      include: {
+        author: true,
+        task: true,
+      },
+    });
 
     return newComment;
   } catch (error) {
-    console.error("Error creating comment:", error);
-    throw new Error("An error occurred while creating the comment.");
+    console.error("Failed to create comment:", error);
+    throw error instanceof Error
+      ? error
+      : new Error("Failed to create comment");
   }
 }

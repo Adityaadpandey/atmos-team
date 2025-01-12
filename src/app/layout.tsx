@@ -27,22 +27,22 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={`${font.className} overflow-x-hidden`}>
           <UserProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <AlertProvider>
-              <SidebarProvider>
-                <AppSidebar />
-                <SidebarTrigger className="" />
-                <div className="h-full w-full max-w-full px-4 py-6 sm:px-6 lg:px-8">
-                  {children}
-                </div>
-              </SidebarProvider>
-            </AlertProvider>
-          </ThemeProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <AlertProvider>
+                <SidebarProvider>
+                  <AppSidebar />
+                  <SidebarTrigger className="" />
+                  <div className="h-full w-full max-w-full px-4 py-6 sm:px-6 lg:px-8">
+                    {children}
+                  </div>
+                </SidebarProvider>
+              </AlertProvider>
+            </ThemeProvider>
           </UserProvider>
         </body>
       </html>

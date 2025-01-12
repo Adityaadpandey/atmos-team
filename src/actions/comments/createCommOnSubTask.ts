@@ -1,25 +1,62 @@
+"use server";
+
 import { db } from "@/lib/db";
+import { Comment } from "@prisma/client";
 
-export async function createCommentOnSubTask(subTaskId: string, text: string) {
+type CreateCommentInput = {
+  subTaskId: string;
+  text: string;
+  authorId: string;
+};
+
+export async function createCommentOnSubTask({
+  subTaskId,
+  text,
+  authorId,
+}: CreateCommentInput): Promise<Comment> {
   try {
-    if (!text) {
-      throw new Error("Text is required.");
+    // Input validation
+    if (!text?.trim()) {
+      throw new Error("Comment text cannot be empty");
     }
+
     if (!subTaskId) {
-      throw new Error("subTaskId is required.");
+      throw new Error("SubTask ID is required");
     }
 
-    const commentData = {
-      text,
-      task: { connect: { id: subTaskId } },
-      author: { connect: { id: "authorId" } }, // replace "authorId" with the actual author ID
-    };
+    if (!authorId) {
+      throw new Error("Author ID is required");
+    }
 
-    const newComment = await db.comment.create({ data: commentData });
+    // Verify subtask exists
+    const subTask = await db.subTask.findUnique({
+      where: { id: subTaskId },
+    });
+
+    if (!subTask) {
+      throw new Error("SubTask not found");
+    }
+
+    // Create comment
+    const newComment = await db.comment.create({
+      data: {
+        text: text.trim(),
+        subTask: { connect: { id: subTaskId } },
+        author: { connect: { id: authorId } },
+        // Also connect to the parent task for proper relationships
+        task: { connect: { id: subTask.taskId } },
+      },
+      include: {
+        author: true,
+        subTask: true,
+      },
+    });
 
     return newComment;
   } catch (error) {
-    console.error("Error creating comment:", error);
-    throw new Error("An error occurred while creating the comment.");
+    console.error("Failed to create comment:", error);
+    throw error instanceof Error
+      ? error
+      : new Error("Failed to create comment");
   }
 }
