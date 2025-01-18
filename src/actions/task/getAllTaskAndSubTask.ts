@@ -6,11 +6,12 @@ import { auth } from "@clerk/nextjs/server";
 export async function getAllTaskAndSubTask() {
   const { userId } = await auth();
   try {
+    // Check if user ID is available
     if (!userId) {
       throw new Error("Valid user ID is required.");
     }
 
-    // Fetch tasks where user is either assignee or creator
+    // Fetch tasks where the user is either assignee or creator
     const tasks = await db.task.findMany({
       where: {
         OR: [{ assignees: { some: { id: userId } } }],
@@ -30,7 +31,7 @@ export async function getAllTaskAndSubTask() {
         actualHours: true,
         isArchived: true,
 
-        // Related entities with selective fields
+        // Include related entities (assignees, creator, team, comments, subTasks, etc.)
         assignees: {
           select: {
             id: true,
@@ -80,7 +81,7 @@ export async function getAllTaskAndSubTask() {
             },
           },
           orderBy: {
-            createdAt: "desc",
+            createdAt: "desc", // Sort comments by most recent
           },
           take: 10, // Limit to latest 10 comments
         },
@@ -118,13 +119,13 @@ export async function getAllTaskAndSubTask() {
                 },
               },
               orderBy: {
-                createdAt: "desc",
+                createdAt: "desc", // Sort comments by most recent
               },
               take: 5, // Limit to latest 5 comments per subtask
             },
           },
           orderBy: {
-            createdAt: "asc",
+            createdAt: "asc", // Sort subtasks by creation date
           },
         },
         relatedTasks: {
@@ -147,24 +148,25 @@ export async function getAllTaskAndSubTask() {
             createdAt: true,
           },
           orderBy: {
-            createdAt: "desc",
+            createdAt: "desc", // Sort attachments by most recent
           },
         },
       },
-      orderBy: [{ deadline: "asc" }, { createdAt: "desc" }],
+      orderBy: [{ deadline: "asc" }, { createdAt: "desc" }], // Sort tasks by deadline and creation date
     });
 
+    // If no tasks found, return an empty array
     if (!tasks.length) {
-      return []; // Return empty array instead of throwing error for no tasks
+      return [];
     }
 
-    return tasks;
+    return tasks; // Return the fetched tasks
   } catch (error) {
-    console.error("Error fetching tasks:", error);
+    console.error("Error fetching tasks:", error); // Log the error
     throw new Error(
       error instanceof Error
-        ? error.message
-        : "Failed to fetch tasks and subtasks",
+        ? error.message // Provide the error message if it's an instance of Error
+        : "Failed to fetch tasks and subtasks", // Provide a default error message
     );
   }
 }
