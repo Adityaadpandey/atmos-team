@@ -2,36 +2,36 @@
 
 import { db } from "@/lib/db";
 
-// Server action to assign assignees to a task
+// Function to assign assignees to a task
 export async function assignAssigneesToTask({
-  taskId,
-  assigneeIds,
+  taskId, // ID of the task to assign assignees to
+  assigneeIds, // List of assignee IDs to be assigned to the task
 }: {
   taskId: string;
   assigneeIds: string[];
 }) {
   try {
-    // Validate required fields
+    // Check if taskId and assigneeIds are provided
     if (!taskId || !assigneeIds?.length) {
       throw new Error("Task ID and assignee IDs are required.");
     }
 
-    // Prepare task data for updating
+    // Prepare the data to update the task with the assignees
     const taskData = {
       assignees: {
         connect: assigneeIds.map((userId: string) => ({ id: userId })),
       },
     };
 
-    // Update the task with the assigned assignees
+    // Update the task with the new assignees
     const updatedTask = await db.task.update({
-      where: { id: taskId },
-      data: taskData,
+      where: { id: taskId }, // Find task by ID
+      data: taskData, // Assign assignees to the task
     });
 
-    return updatedTask;
+    return updatedTask; // Return the updated task
   } catch (error) {
-    console.error("Error assigning task:", error);
-    throw new Error("An error occurred while assigning the task.");
+    console.error("Error assigning task:", error); // Log any errors
+    throw new Error("An error occurred while assigning the task."); // Show a friendly error message
   }
 }

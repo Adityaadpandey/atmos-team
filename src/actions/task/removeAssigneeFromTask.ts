@@ -11,24 +11,27 @@ export async function removeAssigneeFromTask({
   assigneeId: string;
 }) {
   try {
-    // Validate required fields
+    // Validate that both taskId and assigneeId are provided
     if (!taskId || !assigneeId) {
       throw new Error("Task ID and assignee ID are required.");
     }
 
-    // Update the task to disconnect the assignee
+    // Update the task by disconnecting the assignee from the task
     const updatedTask = await db.task.update({
-      where: { id: taskId },
+      where: { id: taskId }, // Find the task by its ID
       data: {
         assignees: {
-          disconnect: { id: assigneeId },
+          disconnect: { id: assigneeId }, // Remove the assignee by their ID
         },
       },
     });
 
+    // Return the updated task with the assignee removed
     return updatedTask;
   } catch (error) {
+    // Log any errors that occur during the process
     console.error("Error removing assignee from task:", error);
+    // Throw a new error with a descriptive message
     throw new Error(
       "An error occurred while removing the assignee from the task.",
     );
