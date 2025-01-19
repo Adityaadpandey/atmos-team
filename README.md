@@ -242,4 +242,68 @@ Run these commands in the project directory:
   `bun run db:push` – Pushes schema changes without migration history.  
   `bun run db:studio` – Opens Prisma Studio GUI.
 
+
 ---
+
+## How to Contribute
+
+We welcome contributions to **Atmos-Team**! Whether you want to add a feature, fix a bug, or improve documentation, we appreciate your efforts.
+
+### 1. **Fork the Repository**
+   Start by forking the repository to your own GitHub account. Click the **Fork** button in the top right corner of the repository page.
+
+### 2. **Clone the Repository**
+   After forking, clone the repository to your local machine using the following command:
+   ```bash
+   git clone https://github.com/learners-arc/atmos-team.git
+   ```
+
+### 3. **Create a New Branch**
+   Create a new branch for your changes. Make sure the branch name is descriptive of the changes you're making:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+
+### 4. **Make Changes**
+   Make your desired changes in the code. If you're fixing a bug, add tests for the bug. If you're adding a new feature, write code that is easy to understand, modular, and well-documented.
+
+### 5. **Commit Your Changes**
+   Commit your changes with a clear, concise commit message that explains the "what" and "why" of your changes.
+   ```bash
+   git commit -m "Add a new feature or fix bug"
+   ```
+
+### 6. **Push Your Changes**
+   Push your changes to your forked repository:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+### 7. **Create a Pull Request**
+   - Go to the original repository where you want to contribute.
+   - Click on the **Pull Requests** tab.
+   - Click the **New Pull Request** button.
+   - Select your branch with the changes and create a pull request.
+   
+   Ensure the following:
+   - The title of the pull request is clear and descriptive.
+   - The description explains what the pull request does and why it's necessary.
+   - If there are any issues related to the pull request, link them in the description using `#issue-number`.
+
+### 8. **Stay Updated**
+   The project is continually evolving, so make sure to stay updated with the latest changes by pulling the latest changes from the `main` branch:
+   ```bash
+   git fetch upstream
+   git checkout main
+   git merge upstream/main
+   ```
+
+### 9. **Respect the Code of Conduct**
+   Please make sure to follow the project's [Code of Conduct](./CHANGELOG.md) and ensure your contributions are respectful and considerate to all members of the community.
+
+### 10. **Review and Discuss**
+   Once your pull request is open, the project maintainers will review your changes. They may suggest improvements or ask for further clarifications. Please be responsive to feedback.
+
+---
+
+By following these steps, you'll be able to contribute effectively to the **Atmos-Team** project! Thank you for your interest in making the project better.
