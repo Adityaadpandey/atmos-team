@@ -1,4 +1,4 @@
-#Atmos-Team
+# Atmos-Team
 
 ## Overview
 
@@ -7,67 +7,159 @@
 - **Generator**: Specifies the Prisma Client generator, which allows for interaction with the database.
 - **Datasource**: Defines the PostgreSQL database as the data source, with the connection URL managed through an environment variable `DATABASE_URL`.
 
+---
+
 ## Models
 
-### User Model
+<details>
+  <summary><strong>User Model</strong></summary>
+  
+  Represents the users of the system. Attributes include:
+  
+  - **id**
+  - **name**
+  - **email**
+  - **role**
+  
+  **Relationships**:
+  - `tasks`
+  - `teams`
+  - `comments`
+  - `notifications`
+  - `workspaces`
 
-- Represents users of the system with attributes like `id`, `name`, `email`, `role`, and various relationships to tasks, teams, comments, notifications, and workspaces.
+</details>
 
-### Workspace Model
+<details>
+  <summary><strong>Workspace Model</strong></summary>
+  
+  Represents collaborative workspaces. Attributes include:
+  
+  - **id**
+  - **name**
+  
+  **Relationships**:
+  - `members`
+  - `teams`
 
-- Represents workspaces where teams collaborate. Contains attributes such as `id`, `name`, and relationships with members and teams.
+</details>
 
-### WorkspaceMember Model
+<details>
+  <summary><strong>WorkspaceMember Model</strong></summary>
+  
+  Join table for the many-to-many relationship between `User` and `Workspace`. Attributes include:
+  
+  - **userId**
+  - **workspaceId**
+  - **role**
 
-- A join table for many-to-many relationships between `User` and `Workspace`, specifying the user's role in the workspace.
+</details>
 
-### Team Model
+<details>
+  <summary><strong>Team Model</strong></summary>
+  
+  Represents teams within a workspace. Attributes include:
+  
+  - **id**
+  - **name**
+  - **description**
+  
+  **Relationships**:
+  - `members`
+  - `tasks`
+  - `settings`
 
-- Represents teams with attributes like `id`, `name`, `description`, and relationships to members, tasks, and settings.
+</details>
 
-### TeamMember Model
+<details>
+  <summary><strong>TeamMember Model</strong></summary>
+  
+  Join table for the many-to-many relationship between `User` and `Team`. Additional attributes include:
+  
+  - **role**
+  - **joinedAt**
 
-- A join table for many-to-many relationships between `User` and `Team`, with additional attributes like `role` and `joinedAt`.
+</details>
 
-### WorkspaceTeam Model
+<details>
+  <summary><strong>WorkspaceTeam Model</strong></summary>
+  
+  Join table for the many-to-many relationship between `Workspace` and `Team`.
 
-- A join table for many-to-many relationships between `Workspace` and `Team`.
+</details>
 
-### TeamSettings Model
+<details>
+  <summary><strong>TeamSettings Model</strong></summary>
+  
+  Contains settings for teams. Attributes include:
+  
+  - **defaultAssignee**
+  - **visibility**
+  - **autoAssignment**
 
-- Contains settings for a team, such as `defaultAssignee`, `visibility`, and `autoAssignment`.
+</details>
 
-### Task Model
+<details>
+  <summary><strong>Task Model</strong></summary>
+  
+  Represents individual tasks assigned to users or teams. Attributes include:
+  
+  - **title**
+  - **description**
+  - **priority**
+  - **status**
+  
+  **Relationships**:
+  - `subtasks`
+  - `comments`
+  - `attachments`
 
-- Represents tasks assigned to users and teams, with attributes such as `title`, `description`, `priority`, `status`, and relationships to subtasks, comments, and attachments.
+</details>
 
-### SubTask Model
+<details>
+  <summary><strong>SubTask Model</strong></summary>
+  
+  Represents subtasks under a main task. Attributes include:
+  
+  - **title**
+  - **description**
+  - **status**
+  - **priority**
 
-- Represents subtasks that are part of a larger `Task`, with attributes like `title`, `description`, `status`, and `priority`.
+</details>
 
-### Comment Model
+<details>
+  <summary><strong>Comment Model</strong></summary>
+  
+  Represents comments on tasks or subtasks. Attributes include:
+  
+  - **text**
+  - **author**
+  - **replies**
 
-- Represents comments on tasks or subtasks, including attributes like `text`, `author`, and `replies`.
+</details>
 
-### Notification Model
+<details>
+  <summary><strong>Notification Model</strong></summary>
+  
+  Represents notifications sent to users. Attributes include:
+  
+  - **type**
+  - **title**
+  - **message**
+  - **isRead**
 
-- Represents notifications sent to users, with attributes like `type`, `title`, `message`, and `isRead` status.
+</details>
 
-### Attachment Model
+<details>
+  <summary><strong>Attachment Model</strong></summary>
+  
+  Represents file attachments to tasks or comments. Attributes include:
+  
+  - **name**
+  - **url**
+  - **type**
+  - **size**
 
-- Represents file attachments to tasks or comments, with attributes like `name`, `url`, `type`, and `size`.
+</details>
 
-## Enums
-
-Enumerations are used to define fixed sets of values for various fields, such as:
-
-- `TaskStatus`: The status of a task (e.g., TODO, IN_PROGRESS).
-- `Priority`: The priority of a task (e.g., LOW, MEDIUM).
-- `Role`: Roles that users can have (e.g., ADMIN, USER).
-- `Visibility`: Visibility settings for teams or tasks (e.g., PUBLIC, PRIVATE).
-
-## Usage
-
-- Run `prisma generate` to generate the Prisma Client.
-- Use `prisma migrate` commands to apply schema changes to the PostgreSQL database.
-- Use the Prisma Client in your application to perform CRUD operations on the defined models.
