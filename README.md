@@ -299,7 +299,7 @@ We welcome contributions to **Atmos-Team**! Whether you want to add a feature, f
    ```
 
 ### 9. **Respect the Code of Conduct**
-   Please make sure to follow the project's [Code of Conduct](#CHANGELOG.md) and ensure your contributions are respectful and considerate to all members of the community.
+   Please make sure to follow the project's [Code of Conduct](./CHANGELOG.md) and ensure your contributions are respectful and considerate to all members of the community.
 
 ### 10. **Review and Discuss**
    Once your pull request is open, the project maintainers will review your changes. They may suggest improvements or ask for further clarifications. Please be responsive to feedback.
