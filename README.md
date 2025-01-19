@@ -1,6 +1,23 @@
-# Atmos-Team
+# **Atmos-Team**
 
-## Overview
+## **Overview**
+
+**Atmos-Team** is a comprehensive, end-to-end solution crafted to enhance project planning, execution, and monitoring. It offers a wide array of robust features, including:
+
+- **Task Management**
+- **Team Collaboration**
+- **Progress Tracking**
+
+Designed to ensure an efficient workflow for teams of any size, **Atmos-Team** leverages cutting-edge technologies to deliver a responsive, scalable, and user-friendly experience. The core technologies include:
+
+- **Next.js**
+- **Tailwind CSS**
+- **PostgreSQL**
+- **Prisma**
+
+These tools work together to create a platform that meets the dynamic needs of modern teams, streamlining their operations and boosting productivity.
+
+---
 
 ## Generator and Datasource
 
